@@ -1,0 +1,31 @@
+---
+title: "MCTS"
+author: "PaigeT"
+date: "12/08/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+data <- read.csv("C:/Users/Correy/Desktop/cmpt310/cmpt-310/final_project/winTracker.csv", sep = ",", header = TRUE)
+```
+
+
+```{r}
+newdata1 <- subset(data, select = c(MCTS, Playouts, Language))
+newdata2 <- subset(data, select = c(PMCTS, Playouts, Language))
+newdata3 <- subset(data, select = c(Alpha.Beta, Playouts, Language))
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(newdata1, aes(x=log(Playouts), y=MCTS, group=Language)) +
+  geom_line(aes(color=Language))+
+  geom_point(aes(color=Language))
+ggplot(newdata2, aes(x=log(Playouts), y=PMCTS, group=Language)) +
+  geom_line(aes(color=Language))+
+  geom_point(aes(color=Language))
+ggplot(newdata3, aes(x=log(Playouts), y=Alpha.Beta, group=Language)) +
+  geom_line(aes(color=Language))+
+  geom_point(aes(color=Language))
+```
