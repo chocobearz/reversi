@@ -67,7 +67,7 @@ The player is white, and will always go first.
 The score is tallied in the bottom corners of the screen, black on the right and
 white on the left.
 
-The game will play until both plays can no longer play a token and both need to
+The game will play until both players can no longer play a token and both need to
 pass. The program will tell you that "The game is done!" and the final scores
 can, again, be found at the bottom of the screen. The higher score is the winner!
 
@@ -90,7 +90,7 @@ https://github.com/johnafish/othello.git
 For more info about the Julia language see [Chosen Language](#chosen-langauge).
 In order to be sure that the code is correctly dropping to the Julia environment
 rather than simply leveraging Julia code within the python environment a test
-was run. Using both the `@` and `dot()` method of matrix multiplication were
+was run. Both the `@` and `dot()` method of matrix multiplication were
 run within python, following a call to the Julia function `*`. All were timed.
 As expected if we are correctly running within the Julia environment, the Julia
 function has much smaller run times.
@@ -150,7 +150,7 @@ recorded (for more on which models were tested see [Models](#models)).
 
 This was done for 1, 10, 100, and 1000 playouts(or depth in the case of Alpha
 Beta) and for each of the Models.
-The comparison can be seen in the plot below. The average of 50 games was taken.
+The comparison can be seen in the plots below. The average of 50 games was taken.
 
 <p align="center">
 <img src="PMCTSPlot.jpg" alt="PMCTSPlot">
@@ -182,7 +182,7 @@ plays with relative ease, although with much higher times than for MCTS. Our
 curve, however, is a much different shape. We can see it very steeply increases
 at 10 then flattens out. This is due to the nature of the algorithm being a tree
 search using depth rather than playouts. The depth of the Tree is somewhere
-close to 10, so increases the depth past this point adds no new time as there is
+close to 10, so increasing the depth past this point adds no new time as there is
 no new area to search. We see such a steep increase with increased depth because
 of the exponential nature of tree depth. We found that 5 depth took on average 
 0.77 second per play, 7 depth took 3.18 and 8 depth took 18.54. In order to meet
