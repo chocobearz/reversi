@@ -2,7 +2,7 @@
   simpleScorejl(array, player)
 
   Counts the number of tiles belonging to a player after a play has been made.
-  Penalizes for number of tiles beloning to the opposite player.
+  Penalizes for number of tiles belonging to the opposite player.
 
   Parameters
   array : the current board

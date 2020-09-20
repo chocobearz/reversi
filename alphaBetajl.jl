@@ -1,5 +1,17 @@
 include("heuristics.jl")
-function alphaBeta(node,depth,alpha,beta,maximizing, nodes, valid, move, moves, player, getPlays)
+function alphaBeta(
+  node,
+  depth,
+  alpha,
+  beta,
+  maximizing,
+  nodes,
+  valid,
+  move,
+  moves,
+  player,
+  getPlays
+)
   nodes += 1
   getPlaysResult = getPlays(node)
 
@@ -22,7 +34,19 @@ function alphaBeta(node,depth,alpha,beta,maximizing, nodes, valid, move, moves, 
     bestChoice = []
     for i in 1:boardsLength
       board = boards[i, :, :]
-      boardValue = alphaBeta(board,depth-1,alpha,beta,0, nodes,valid,move, moves, player, getPlays)[1]
+      boardValue = alphaBeta(
+        board,
+        depth-1,
+        alpha,
+        beta,
+        0,
+        nodes,
+        valid,
+        move,
+        moves,
+        player,
+        getPlays
+      )[1]
       if boardValue>v
         v = boardValue
         bestBoard = board
@@ -41,7 +65,19 @@ function alphaBeta(node,depth,alpha,beta,maximizing, nodes, valid, move, moves, 
     bestChoice = []
     for i in 1:boardsLength
       board = boards[i, :, :]
-      boardValue = alphaBeta(board,depth-1,alpha,beta,0, nodes,valid,move, moves, player, getPlays)[1]
+      boardValue = alphaBeta(
+        board,
+        depth-1,
+        alpha,
+        beta,
+        0,
+        nodes,
+        valid,
+        move,
+        moves,
+        player,
+        getPlays
+      )[1]
       if boardValue<v
         v = boardValue
         bestBoard = board
