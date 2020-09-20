@@ -24,12 +24,15 @@ alphaBetajl = j.include("alphaBetajl.jl")
 
 #Variable setup
 nodes = 0
+difficulty = 0
 depth = 4
 moves = 0
 playouts = 10
 pmctimes = []
 abtimes = []
 mctactimes = []
+pmcscaledtimes = []
+mctacscaledtimes = []
 plays = 0
 
 #Tkinter setup
@@ -186,10 +189,10 @@ class Board:
       self.drawScoreBoard()
       screen.update()
       #If the computer is AI, make a move (Other AI is slightly better)
+      # tests against PMCTS
       if self.player == 0:
         startTime = time()
         start = time()
-        #simpleMove = self.chooseMove(4)
         simpleMove = chooseMovejl(
           self.array,
           1,
@@ -226,11 +229,11 @@ class Board:
         startTime = time()
         self.oldarray = self.array
         #easy : pure MCTS
-        if depth == 1 or depth == 4:
+        if difficulty == 1 or difficulty == 4:
           start = time()
           simpleMove = chooseMovejl(
             self.array,
-            depth,
+            difficulty,
             playouts,
             valid,
             self.passed,
@@ -240,7 +243,7 @@ class Board:
             self.won
           )
           end = time()
-          if depth == 4:
+          if difficulty == 4:
             mctactimes.append(end - start)
           else:
             pmctimes.append(end-start)
@@ -261,7 +264,7 @@ class Board:
           start = time()
           alphaBetaResult = alphaBetajl(
             self.array,
-            playouts,
+            depth,
             -float("inf"),
             float("inf"),
             1,
@@ -1068,7 +1071,7 @@ runGame()
 
 #Binding, setting
 # screen.bind("<Button-1>", clickHandle)
-depth = 4
+difficulty = 4
 playGame()
 screen.bind("<Key>",keyHandle)
 screen.focus_set()

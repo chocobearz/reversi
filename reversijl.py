@@ -25,7 +25,7 @@ alphaBetajl = j.include("alphaBetajl.jl")
 
 #Variable setup
 nodes = 0
-depth = 4
+difficulty = 0
 moves = 0
 playouts = 1000
 depth = 7
@@ -200,12 +200,11 @@ class Board:
       if self.player==1:
         startTime = time()
         self.oldarray = self.array
-        #easy : pure MCTS
-        if depth == 1 or depth == 4:
-          start = time()
+        # one star : PMCTS, two stars : PMCTS with tactics
+        if difficulty == 1 or difficulty == 4:
           simpleMove = chooseMovejl(
             self.array,
-            depth,
+            difficulty,
             playouts,
             valid,
             self.passed,
@@ -499,7 +498,7 @@ def valid(array,player,x,y):
 
 #When the user clicks, if it's a valid move, make the move
 def clickHandle(event):
-  global depth
+  global difficulty
   xMouse = event.x
   yMouse = event.y
   if running:
@@ -525,15 +524,15 @@ def clickHandle(event):
     if 300<=yMouse<=350:
       #One star
       if 25<=xMouse<=155:
-        depth = 1
+        difficulty = 1
         playGame()
       #Two star
       elif 180<=xMouse<=310:
-        depth = 4
+        difficulty = 4
         playGame()
       #Three star
       elif 335<=xMouse<=465:
-        depth = 6
+        difficulty = 6
         playGame()
 
 def keyHandle(event):

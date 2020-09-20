@@ -20,11 +20,14 @@ import operator
 #Variable setup
 nodes = 0
 depth = 4
+difficulty = 0
 moves = 0
 playouts = 1
 pmctimes = []
 abtimes = []
 mctactimes = []
+pmcscaledtimes = []
+mctacscaledtimes = []
 plays = 0
 
 #Tkinter setup
@@ -226,8 +229,10 @@ class Board:
           start = time()
           alphaBetaResult = self.alphaBeta(
             self.array,playouts,
+            depth,
             -float("inf"),
-            float("inf"),1
+            float("inf"),
+            1
           )
           end = time()
           abtimes.append(end-start)
@@ -349,6 +354,7 @@ class Board:
     result_tracker = {}
     current_board = self.array
     current_player = self.player
+    loopTime = []
 
     play_choices = self.getPlays(current_board)
     empty = play_choices[0]
@@ -403,7 +409,7 @@ class Board:
             continue
           temp_possible_boards = play_choices[1]
           #pure MCTS
-          if depth == 1:
+          if difficulty == 1:
             chosen = randint(0,((len(temp_possible_boards))-1))
           #use gameplay tactics
           else:
@@ -1025,7 +1031,7 @@ runGame()
 
 #Binding, setting
 # screen.bind("<Button-1>", clickHandle)
-depth = 4
+difficulty = 4
 playGame()
 screen.bind("<Key>",keyHandle)
 screen.focus_set()

@@ -20,11 +20,9 @@ import operator
 #Variable setup
 nodes = 0
 depth = 4
+difficulty = 0
 moves = 0
 playouts = 1
-pmctimes = []
-abtimes = []
-mctactimes = []
 plays = 0
 
 #Tkinter setup
@@ -193,11 +191,8 @@ class Board:
         startTime = time()
         self.oldarray = self.array
         #easy : pure MCTS
-        if depth == 1 or depth == 4:
-          start = time()
-          simpleMove = self.chooseMove(depth)
-          end = time()
-          mctactimes.append(end - start)
+        if difficulty == 1 or difficulty == 4:
+          simpleMove = self.chooseMove(difficulty)
           if len(simpleMove) == 2:
             self.array = simpleMove[0]
             position = simpleMove[1]
@@ -208,14 +203,14 @@ class Board:
           self.player = 1
         #smartest AI with alpha beta min max pruneing and knowledge of tactics
         else:
-          start = time()
           alphaBetaResult = self.alphaBeta(
             self.array,playouts,
+            depth,
             -float("inf"),
-            float("inf"),1
+            float("inf"),
+            1
           )
           end = time()
-          abtimes.append(end-start)
           self.array = alphaBetaResult[1]
 
           if len(alphaBetaResult)==3:
@@ -330,16 +325,16 @@ class Board:
     return[choices, boards]
 
 #################this code was written by me#################
-  #METHOD: PURE MONTE CARLO IN JULIA level 1
-
-  def chooseMove(self, depth):
+  
+  #pure mote carlo tree search, level 1 and 2
+  def chooseMove(self, difficulty):
     """Choose Move determines what the next optimal move should be, based on the
     maximizing the linear combination from the play statistics of random playouts
 
     Parameters:
 
-    depth(int): depth 0 will do pure MCTS and depth 4 will use tactics to choose
-      the next play
+    difficulty(int): difficulty 0 will do pure MCTS and difficulty 4 will use
+      tactics to choose the next play
 
     Returns:
 
@@ -403,7 +398,7 @@ class Board:
             continue
           temp_possible_boards = play_choices[1]
           #pure MCTS
-          if depth == 1:
+          if difficulty == 1:
             chosen = randint(0,((len(temp_possible_boards))-1))
           #use gameplay tactics
           else:
@@ -933,7 +928,7 @@ def valid(array,player,x,y):
 
 #When the user clicks, if it's a valid move, make the move
 def clickHandle(event):
-  global depth
+  global difficulty
   xMouse = event.x
   yMouse = event.y
   if running:
@@ -959,15 +954,15 @@ def clickHandle(event):
     if 300<=yMouse<=350:
       #One star
       if 25<=xMouse<=155:
-        depth = 1
+        difficulty = 1
         playGame()
       #Two star
       elif 180<=xMouse<=310:
-        depth = 4
+        difficulty = 4
         playGame()
       #Three star
       elif 335<=xMouse<=465:
-        depth = 6
+        difficulty = 6
         playGame()
 
 def keyHandle(event):
