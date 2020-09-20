@@ -206,7 +206,20 @@ class Board:
         )
         end = time()
         pmctimes.append(end - start)
-        # mctactimes.append(end - start)
+        # tests mcts with tactics
+        #simpleMove = chooseMovejl(
+        #  self.array,
+        #  4,
+        #  playouts,
+        #  valid,
+        #  self.passed,
+        #  self.player,
+        #  moves,
+        #  self.getPlays,
+        #  self.won
+        #)
+        #end = time()
+        #mctscticstimes.append(end - start)
         if len(simpleMove) == 3:
           self.array = simpleMove[0]
           position = simpleMove[1]
@@ -295,9 +308,21 @@ class Board:
         250,550,anchor="c",
         font=("Consolas",15), text="The game is done!"
       )
-      print("time per PMCTS playout : {}".format(sum(pmctimes)/(plays+2)))
-      print("time per MC tactics playout : {}".format(sum(mctactimes)/(plays+2)))
-      print("time per alpha beta playout : {}".format(sum(abtimes)/(plays+2)))
+      print("time per PMCTS play : {}".format(
+        sum(pmctimes)/(plays+2))
+      )
+      print("time per MC tactics play : {}".format(
+        sum(mctactimes)/(plays+2))
+      )
+      print("time per alpha beta play : {}".format(
+        sum(abtimes)/(plays+2))
+      )
+      print("time per PMCTS playout : {}".format(
+        sum(pmctimes)/(plays+2))
+      )
+      print("time per MC tactics playout : {}".format(
+        sum(mctactimes)/(plays+2))
+      )
     plays+=1
     if not self.won:
       root.after(0, self.update)

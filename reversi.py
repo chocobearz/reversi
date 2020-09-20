@@ -229,9 +229,6 @@ class Board:
         250,550,anchor="c",
         font=("Consolas",15), text="The game is done!"
       )
-      print("time per PMCTS playout : {}".format(sum(pmctimes)/plays+1))
-      print("time per MC tactics playout : {}".format(sum(mctactimes)/plays+1))
-      print("time per alpha beta playout : {}".format(sum(abtimes)/plays+1))
 #### END OF MODIFIED BY ME ####################################
 
   #Moves to position
@@ -466,7 +463,7 @@ class Board:
     # return location with max wins
     return [possible_boards[(winning_move)-1], empty[(winning_move)-1]]
 
-  #alphaBeta pruning on the minimax tree
+  #alphaBeta pruning on the minimax tree, level 3
   def alphaBeta(self,node,depth,alpha,beta,maximizing):
     """Choose Move determines what the next optimal move should be, based alpha
     beta pruning on a minimax tree

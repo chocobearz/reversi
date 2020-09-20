@@ -185,18 +185,24 @@ class Board:
       #If the computer is AI, make a move (Other AI is slightly better)
       if self.player == 0:
         startTime = time()
+        # time entire play
         start = time()
         #simpleMove = self.chooseMove(4)
         simpleMove = self.chooseMove(1)
         end = time()
         #mctactimes.append(end - start)
         pmctimes.append(end-start)
-        if len(simpleMove) == 2:
+        # scaled times take into account how many possible moves are searched
+        if len(simpleMove) == 3:
           self.array = simpleMove[0]
           position = simpleMove[1]
           self.oldarray[position[0]][position[1]]="b"
+          pmcscaledtimes.append(simpleMove[2])
+          #mctactscaledtimes.append(simpleMove[2])
         else:
-          self.array = simpleMove
+          self.array = simpleMove[0]
+          pmcscaledtimes.append(simpleMove[1])
+          #mctactscaledtimes.append(simpleMove[1])
         #reset player incase it got changed by the playouts
         self.player = 0
         self.player = 1-self.player
@@ -211,17 +217,32 @@ class Board:
         startTime = time()
         self.oldarray = self.array
         #easy : pure MCTS
-        if depth == 1 or depth == 4:
+        if difficulty == 1 or difficulty == 4:
           start = time()
-          simpleMove = self.chooseMove(depth)
+          simpleMove = self.chooseMove(difficulty)
           end = time()
-          mctactimes.append(end - start)
-          if len(simpleMove) == 2:
+          if difficulty == 1:
+            pmctimes.append(end -start)
+          else:
+            mctactimes.append(end-start)
+          if len(simpleMove) == 3:
             self.array = simpleMove[0]
             position = simpleMove[1]
             self.oldarray[position[0]][position[1]]="b"
+            if difficulty == 1:
+              pmctimes.append(end - start)
+              pmcscaledtimes.append(simpleMove[2])
+            if difficulty == 4:
+              mctactimes.append(end - start)
+              mctacscaledtimes.append(simpleMove[2])
           else:
-            self.array = simpleMove
+            self.array = simpleMove[0]
+            if difficulty == 1:
+              pmctimes.append(end - start)
+              pmcscaledtimes.append(simpleMove[1])
+            if difficulty == 4:
+              mctactimes.append(end - start)
+              mctacscaledtimes.append(simpleMove[1])
           #reset player incase it got changed by the playouts
           self.player = 1
         #smartest AI with alpha beta min max pruneing and knowledge of tactics
@@ -254,9 +275,23 @@ class Board:
         250,550,anchor="c",
         font=("Consolas",15), text="The game is done!"
       )
-      print("time per PMCTS playout : {}".format(sum(pmctimes)/plays+1))
-      print("time per MC tactics playout : {}".format(sum(mctactimes)/plays+1))
-      print("time per alpha beta playout : {}".format(sum(abtimes)/plays+1))
+      print("time per PMCTS play : {}".format(
+        (sum(pmctimes)/(plays+2)))
+      )
+      print("time per MC tactics play : {}".format(
+        (sum(mctactimes)/(plays+2)))
+      )
+      print("time per alpha beta play : {}".format(
+        (sum(abtimes)/(plays+2)))
+      )
+      print("time per PMCTS playout : {}".format(
+        (sum(pmcscaledtimes)/(plays+2)))
+      )
+      print("time per MC tactics playout : {}".format(
+        (sum(mctacscaledtimes)/(plays+2)))
+      )
+      print("time per PMCTS playout : {}".format(pmcscaledtimes))
+      print("time per MC tactics playout : {}".format(pmctimes))
     plays+=1
     if not self.won:
       root.after(0, self.update)
@@ -335,15 +370,15 @@ class Board:
     return[choices, boards]
 
 #################this code was written by me#################
-  #METHOD: PURE MONTE CARLO IN JULIA level 1
 
-  def chooseMove(self, depth):
+  #pure monte carlo tree search, level 1 and 2
+  def chooseMove(self, difficulty):
     """Choose Move determines what the next optimal move should be, based on the
     maximizing the linear combination from the play statistics of random playouts
 
     Parameters:
 
-    depth(int): depth 0 will do pure MCTS and depth 4 will use tactics to choose
+    difficulty(int): difficulty 0 will do pure MCTS and difficulty 4 will use tactics to choose
       the next play
 
     Returns:
@@ -363,19 +398,20 @@ class Board:
     possible_boards = play_choices[1]
     if len(empty) == 0:
       self.passed = True
-      return self.array
+      return [self.array, 0]
     elif len(empty) == 1:
-      return(possible_boards[0], empty[0])
+      return(possible_boards[0], empty[0], 0)
 
     #set up dict for the locations and their win statistics
     for location in range(0, len(empty)):
       result_tracker.setdefault(location, None)
 
-    for empty_location in result_tracker:
+    for i, empty_location in enumerate(result_tracker):
       wins = 0
       losses = 0
       draws = 0
       # set number of random playouts
+
       for playout in range(playouts):
         #incase the player gets changed in the playouts (eg. passing)
         self.player = current_player
@@ -396,6 +432,10 @@ class Board:
           self.player = 1-self.player
 
         # all subsequent plays random for both players until game over
+        ''' time the while loop, majority of computation is here, the rest is
+        fairly negligible'''
+        start = time()
+        loopCounter = 0
         while not won:
           # choose randomly from empty locations
           play_choices = self.getPlays(current_board)
@@ -432,6 +472,13 @@ class Board:
             else:
               passed = True
             self.player = 1-self.player
+          loopCounter +=1
+        end = time()
+        # in order to account for some plays having more or less choices
+        if loopCounter:
+          loopTime.append((end-start)/(loopCounter))
+        else:
+          loopTime.append(0)
         flat_board = [item for sublist in current_board for item in sublist]
         tile_counts = {i:flat_board.count(i) for i in flat_board}
         #number of black tiles
@@ -444,7 +491,6 @@ class Board:
           white = tile_counts['w']
         else:
           white = 0
-
         #increment the relevant stat
         #allowe AI to play against eachother
         if self.player == 1:
@@ -468,14 +514,19 @@ class Board:
       # )
       #)
       result_tracker[empty_location] = wins + draws*2 - losses*5
-
+    
+    playtime = ((sum(loopTime)/len(loopTime)))
     # choose the maximum of the linear combination
     winning_move = max(result_tracker.items(), key=operator.itemgetter(1))[0]
     #print(winning_move)
     #print("run results are: {}".format(result_tracker))
     #print("move choice: {}".format(winning_move))
     # return location with max wins
-    return [possible_boards[(winning_move)-1], empty[(winning_move)-1]]
+    return [
+      possible_boards[(winning_move)-1],
+      empty[(winning_move)-1],
+      playtime
+    ]
 
   #alphaBeta pruning on the minimax tree
   def alphaBeta(self,node,depth,alpha,beta,maximizing):

@@ -214,10 +214,6 @@ class Board:
             self.won
           )
           end = time()
-          if depth == 4:
-            mctactimes.append(end - start)
-          else:
-            pmctimes.append(end-start)
           if len(simpleMove) == 3:
             self.array = simpleMove[0]
             position = simpleMove[1]
@@ -230,7 +226,6 @@ class Board:
           self.player = 1
         #smartest AI with alpha beta min max pruneing and knowledge of tactics
         else:
-          start = time()
           alphaBetaResult = alphaBetajl(
             self.array,
             depth,
@@ -244,8 +239,6 @@ class Board:
             self.player,
             self.getPlays
           )
-          end = time()
-          abtimes.append(end-start)
           self.array = alphaBetaResult[1]
 
           if len(alphaBetaResult)==3:
@@ -264,9 +257,6 @@ class Board:
         250,550,anchor="c",
         font=("Consolas",15), text="The game is done!"
       )
-      print("time per PMCTS playout : {}".format(sum(pmctimes)/(plays+2)))
-      print("time per MC tactics playout : {}".format(sum(mctactimes)/(plays+2)))
-      print("time per alpha beta playout : {}".format(sum(abtimes)/(plays+2)))
 #### END OF MODIFIED BY ME ####################################
 
   #Moves to position
