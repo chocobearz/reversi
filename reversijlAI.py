@@ -16,7 +16,8 @@ from random import *
 from copy import deepcopy
 from collections import Counter
 import operator
-import julia
+from statistics import mean
+import Julia
 
 j = julia.Julia()
 chooseMovejl = j.include("chooseMovejl.jl")
@@ -33,7 +34,6 @@ abtimes = []
 mctactimes = []
 pmcscaledtimes = []
 mctacscaledtimes = []
-plays = 0
 
 #Tkinter setup
 root = Tk()
@@ -69,7 +69,6 @@ class Board:
   #Updating the board to the screen
   def update(self):
     global playouts
-    global plays
     global nodes
     screen.delete("highlight")
     screen.delete("tile")
@@ -309,21 +308,20 @@ class Board:
         font=("Consolas",15), text="The game is done!"
       )
       print("time per PMCTS play : {}".format(
-        sum(pmctimes)/(plays+2))
+        mean(pmctimes))
       )
       print("time per MC tactics play : {}".format(
-        sum(mctactimes)/(plays+2))
+        mean(mctactimes))
       )
       print("time per alpha beta play : {}".format(
-        sum(abtimes)/(plays+2))
+        mean(abtimes))
       )
       print("time per PMCTS playout : {}".format(
-        sum(pmctimes)/(plays+2))
+        mean(pmctimes))
       )
       print("time per MC tactics playout : {}".format(
-        sum(mctactimes)/(plays+2))
+        mean(mctactimes))
       )
-    plays+=1
     if not self.won:
       root.after(0, self.update)
 #### END OF MODIFIED BY ME ####################################

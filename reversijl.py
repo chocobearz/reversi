@@ -16,8 +16,7 @@ from random import *
 from copy import deepcopy
 from collections import Counter
 import operator
-import julia
-#julia.install()
+import Julia
 
 j = julia.Julia()
 chooseMovejl = j.include("chooseMovejl.jl")
@@ -32,7 +31,6 @@ depth = 7
 pmctimes = []
 abtimes = []
 mctactimes = []
-plays = 0
 
 #Tkinter setup
 root = Tk()
@@ -262,7 +260,6 @@ class Board:
   #Moves to position
   def boardMove(self,x,y):
     global nodes
-    global plays
     #Move and update screen
     self.oldarray = self.array
     self.oldarray[x][y]="w"
@@ -275,7 +272,6 @@ class Board:
     #Check if ai must pass
     self.passTest()
     self.update()
-    plays+=1
 
   #METHOD: Draws scoreboard to screen
   def drawScoreBoard(self):
