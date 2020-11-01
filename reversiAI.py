@@ -24,7 +24,6 @@ import pandas as pd
 nodes = 0
 depth = 4
 moves = 0
-playouts = 1
 pmctimes = []
 abtimes = []
 mctactimes = []
@@ -51,7 +50,14 @@ parser.add_argument(
   "model2",
   help="the AI model to use for player2: PMC, MC, AB"
 )
+parser.add_argument(
+  "playouts",
+  help="number of playouts for monte carlo models to run and depth for alpha beta"
+)
 args = parser.parse_args()
+
+playouts = int(args.playouts)
+depth = int(args.playouts)
 
 if args.model1 == "PMC":
   P0d = 1
@@ -216,120 +222,249 @@ class Board:
 
 ######## MODIFIED BY ME ##############################
     if not self.won:
+      global difficulty
+      player = self.player
       #Draw the scoreboard and update the screen
       self.drawScoreBoard()
       screen.update()
-      #If the computer is AI, make a move (Other AI is slightly better)
-      if self.player == 0:
-        startTime = time()
-        # time entire play
+      startTime = time()
+      self.oldarray = self.array
+      #easy : pure MCTS
+      #print(difficulty)
+      if difficulty == 1 or difficulty == 4:
         start = time()
-        #simpleMove = self.chooseMove(4)
-        simpleMove = self.chooseMove(1)
+        simpleMove = self.chooseMove(difficulty)
         end = time()
-        #mctactimes.append(end - start)
-        pmctimes.append(end-start)
-        # scaled times take into account how many possible moves are searched
         if len(simpleMove) == 3:
           self.array = simpleMove[0]
           position = simpleMove[1]
-          self.oldarray[position[0]][position[1]]="b"
-          pmcscaledtimes.append(simpleMove[2])
-          #mctactscaledtimes.append(simpleMove[2])
+          if player == 1:
+            self.oldarray[position[0]][position[1]]="b"
+            #reset player incase it got changed by the playouts
+            self.player = 1
+          else:
+            self.oldarray[position[0]][position[1]]="w"
+            #reset player incase it got changed by the playouts
+            self.player = 0
+          if difficulty == 1:
+            pmctimes.append(end - start)
+            pmcscaledtimes.append(simpleMove[2])
+          if difficulty == 4:
+            mctactimes.append(end - start)
+            mctacscaledtimes.append(simpleMove[2])
         else:
           self.array = simpleMove[0]
-          pmcscaledtimes.append(simpleMove[1])
-          #mctactscaledtimes.append(simpleMove[1])
-        #reset player incase it got changed by the playouts
-        self.player = 0
-        self.player = 1-self.player
-        deltaTime = round((time()-startTime)*100)/100
-        if deltaTime<2:
-          sleep(2-deltaTime)
-        #Player must pass?
-        nodes = 0
-        self.passTest()
-      elif self.player==1:
-      #if self.player==1:
-        startTime = time()
-        self.oldarray = self.array
-        #easy : pure MCTS
-        if difficulty == 1 or difficulty == 4:
-          start = time()
-          simpleMove = self.chooseMove(difficulty)
-          end = time()
           if difficulty == 1:
-            pmctimes.append(end -start)
-          else:
-            mctactimes.append(end-start)
-          if len(simpleMove) == 3:
-            self.array = simpleMove[0]
-            position = simpleMove[1]
-            self.oldarray[position[0]][position[1]]="b"
-            if difficulty == 1:
-              pmctimes.append(end - start)
-              pmcscaledtimes.append(simpleMove[2])
-            if difficulty == 4:
-              mctactimes.append(end - start)
-              mctacscaledtimes.append(simpleMove[2])
-          else:
-            self.array = simpleMove[0]
-            if difficulty == 1:
-              pmctimes.append(end - start)
-              pmcscaledtimes.append(simpleMove[1])
-            if difficulty == 4:
-              mctactimes.append(end - start)
-              mctacscaledtimes.append(simpleMove[1])
-          #reset player incase it got changed by the playouts
-          self.player = 1
-        #smartest AI with alpha beta min max pruneing and knowledge of tactics
-        else:
-          start = time()
-          alphaBetaResult = self.alphaBeta(
-            self.array,playouts,
-            depth,
-            -float("inf"),
-            float("inf"),
-            1
-          )
-          end = time()
-          abtimes.append(end-start)
-          self.array = alphaBetaResult[1]
+            pmctimes.append(end - start)
+            pmcscaledtimes.append(simpleMove[1])
+          if difficulty == 4:
+            mctactimes.append(end - start)
+            mctacscaledtimes.append(simpleMove[1])
+      #smartest AI with alpha beta min max pruneing and knowledge of tactics
+      else:
+        start = time()
+        alphaBetaResult = self.alphaBeta(
+          self.array,
+          depth,
+          -float("inf"),
+          float("inf"),
+          1
+        )
+        end = time()
+        abtimes.append(end-start)
+        self.array = alphaBetaResult[1]
 
-          if len(alphaBetaResult)==3:
-            position = alphaBetaResult[2]
+        if len(alphaBetaResult)==3:
+          position = alphaBetaResult[2]
+          if self.player == 1:
             self.oldarray[position[0]][position[1]]="b"
+          else:
+            self.oldarray[position[0]][position[1]]="w"
 
-        self.player = 1-self.player
-        deltaTime = round((time()-startTime)*100)/100
-        if deltaTime<2:
-          sleep(2-deltaTime)
-        nodes = 0
-        #Player must pass?
-        self.passTest()
+      if self.player == 1:
+        self.player = 0
+        difficulty = P0d
+      else:
+        self.player = 1
+        difficulty = P1d
+
+      nodes = 0
+      self.passTest()
     else:
       screen.create_text(
         250,550,anchor="c",
         font=("Consolas",15), text="The game is done!"
       )
-      print("time per PMCTS play : {}".format(
-        (sum(pmctimes)/(plays+2)))
-      )
-      print("time per MC tactics play : {}".format(
-        (sum(mctactimes)/(plays+2)))
-      )
-      print("time per alpha beta play : {}".format(
-        (sum(abtimes)/(plays+2)))
-      )
-      print("time per PMCTS playout : {}".format(
-        (sum(pmcscaledtimes)/(plays+2)))
-      )
-      print("time per MC tactics playout : {}".format(
-        (sum(mctacscaledtimes)/(plays+2)))
-      )
-      print("time per PMCTS playout : {}".format(pmcscaledtimes))
-      print("time per MC tactics playout : {}".format(pmctimes))
-    plays+=1
+      #if len(pmctimes):
+      #  print(
+      #    "time per PMCTS play : {}".format(
+      #      (mean(pmctimes))
+      #    )
+      #  )
+      #if len(mctactimes):
+      #  print(
+      #    "time per MC tactics play : {}".format(
+      #      (mean(mctactimes))
+      #    )
+      #  )
+      #if len(abtimes):
+      #  print(
+      #    "time per alpha beta play : {}".format(
+      #      (mean(abtimes))
+      #    )
+      #  )
+      #if len(pmcscaledtimes):
+      #  print(
+      #    "time per PMCTS playout : {}".format(
+      #      (mean(pmcscaledtimes))
+      #    )
+      #  )
+      #if len(mctacscaledtimes):
+      #  print(
+      #    "time per MC tactics playout : {}".format(
+      #      (mean(mctacscaledtimes))
+      #    )
+      #  )
+
+      if (P0d == 1 and P1d == 4) or (P0d == 4 and P1d == 1):
+        pmctimesavg = mean(pmctimes)
+        pmcscaledtimesavg = mean(pmcscaledtimes)
+        mctactimesavg = mean(mctactimes)
+        mctacscaledtimesavg = mean(mctacscaledtimes)
+        if P0d == 1:
+          if player_score > computer_score:
+            winner = "PMC"
+          else:
+            winner = "MC"
+        else:
+          if player_score > computer_score:
+            winner = "MC"
+          else:
+            winner = "PMC"
+        results = {
+          "PMCTS full play" : [pmctimesavg],
+          "PMCTS Playout" : [pmcscaledtimesavg],
+          "MCTS full play" : [mctactimesavg],
+          "MCTS Playout" : [mctacscaledtimesavg],
+          "AB full play" : ["NA"],
+          "AB Playout" : ["NA"],
+          "MC vs PMC" : [winner],
+          "PMC vs AB" : ["NA"],
+          "MC vs AB" : ["NA"],
+          "Playouts" : [playouts]
+        }
+        resultsdf = pd.DataFrame(data=results)
+        resultsdf.to_csv('results.csv', mode='a', header=False)
+      elif P0d == 1 and P1d == 1:
+        pmctimesavg = mean(pmctimes)
+        pmcscaledtimesavg = mean(pmcscaledtimes)
+        results = {
+          "PMCTS full play" : [pmctimesavg],
+          "PMCTS Playout" : [pmcscaledtimesavg],
+          "MCTS full play" : ["NA"],
+          "MCTS Playout" : ["NA"],
+          "AB full play" : ["NA"],
+          "AB Playout" : ["NA"],
+          "MC vs PMC" : ["NA"],
+          "PMC vs AB" : ["NA"],
+          "MC vs AB" : ["NA"],
+          "Playouts" : [playouts]
+        }
+        resultsdf = pd.DataFrame(data=results)
+        resultsdf.to_csv('results.csv', mode='a', header=False)
+      elif (P0d == 1 and P1d == 6) and (P0d == 6 and P1d == 1):
+        pmctimesavg = mean(pmctimes)
+        pmcscaledtimesavg = mean(pmcscaledtimes)
+        abtimesavg = mean(abtimes)
+        abscaledtimesavg = 0
+        if P0d == 1:
+          if player_score > computer_score:
+            winner = "PMC"
+          else:
+            winner = "AB"
+        else:
+          if player_score > computer_score:
+            winner = "AB"
+          else:
+            winner = "PMC"
+        results = {
+          "PMCTS full play" : [pmctimesavg],
+          "PMCTS Playout" : [pmcscaledtimesavg],
+          "MCTS full play" : ["NA"],
+          "MCTS Playout" : ["NA"],
+          "AB full play" : [abtimesavg],
+          "AB Playout" : [abscaledtimesavg],
+          "MC vs PMC" : ["NA"],
+          "PMC vs AB" : [winner],
+          "MC vs AB" : ["NA"],
+          "Playouts" : [playouts]
+        }
+        resultsdf = pd.DataFrame(data=results)
+        resultsdf.to_csv('results.csv', mode='a', header=False)
+      elif P0d == 4 and P1d == 4:
+        mctactimesavg = mean(mctactimes)
+        mctacscaledtimesavg = mean(mctacscaledtimes)
+        results = {
+          "PMCTS full play" : ["NA"],
+          "PMCTS Playout" : ["NA"],
+          "MCTS full play" : [mctactimesavg],
+          "MCTS Playout" : [mctacscaledtimesavg],
+          "AB full play" : ["NA"],
+          "AB Playout" : ["NA"],
+          "MC vs PMC" : ["NA"],
+          "PMC vs AB" : ["NA"],
+          "MC vs AB" : ["NA"],
+          "Playouts" : [playouts]
+        }
+        resultsdf = pd.DataFrame(data=results)
+        resultsdf.to_csv('results.csv', mode='a', header=False)
+      elif (P0d == 4 and P1d == 6) and (P0d == 6 and P1d == 4):
+        mctactimesavg = mean(mctactimes)
+        mctacscaledtimesavg = mean(mctacscaledtimes)
+        abtimesavg = mean(abtimes)
+        abscaledtimesavg = 0
+        if P0d == 4:
+          if player_score > computer_score:
+            winner = "MC"
+          else:
+            winner = "AB"
+        else:
+          if player_score > computer_score:
+            winner = "AB"
+          else:
+            winner = "MC"
+        results = {
+          "PMCTS full play" : ["NA"],
+          "PMCTS Playout" : ["NA"],
+          "MCTS full play" : [mctactimesavg],
+          "MCTS Playout" : [mctacscaledtimesavg],
+          "AB full play" : [abtimesavg],
+          "AB Playout" : [abscaledtimesavg],
+          "MC vs PMC" : ["NA"],
+          "PMC vs AB" : ["NA"],
+          "MC vs AB" : [winner],
+          "Playouts" : [playouts]
+        }
+        resultsdf = pd.DataFrame(data=results)
+        resultsdf.to_csv('results.csv', mode='a', header=False)
+      elif (P0d == 6 and P1d == 6):
+        abtimesavg = mean(abtimes)
+        abscaledtimesavg = 0
+        results = {
+          "PMCTS full play" : ["NA"],
+          "PMCTS Playout" : ["NA"],
+          "MCTS full play" : ["NA"],
+          "MCTS Playout" : ["NA"],
+          "AB full play" : [abtimesavg],
+          "AB Playout" : [abscaledtimesavg],
+          "MC vs PMC" : ["NA"],
+          "PMC vs AB" : ["NA"],
+          "MC vs AB" : ["NA"],
+          "Playouts" : [playouts]
+        }
+        resultsdf = pd.DataFrame(data=results)
+        resultsdf.to_csv('results.csv', mode='a', header=False)
+
     if not self.won:
       root.after(0, self.update)
 #### END OF MODIFIED BY ME ####################################
@@ -337,6 +472,8 @@ class Board:
   #METHOD: Draws scoreboard to screen
   def drawScoreBoard(self):
     global moves
+    global player_score
+    global computer_score
     #Deleting prior score elements
     screen.delete("score")
 
@@ -415,12 +552,12 @@ class Board:
 
     Parameters:
 
-    difficulty(int): difficulty 0 will do pure MCTS and difficulty 4 will use tactics to choose
-      the next play
+    difficulty(int): difficulty 0 will do pure MCTS and difficulty 4 will use
+      tactics to choose the next play
 
     Returns:
 
-    list : list with the new chosen board and the chosen tile to play
+    list : list with the new chosen board, the chosen tile to play and time
     """
     global playouts
     result_tracker = {}
@@ -580,7 +717,7 @@ class Board:
 
     Returns:
 
-    list : list with the new chosen board and the chosen tile to play
+    list : list with the new chosen board, the chosen tile to play and time
     """
     global nodes
     nodes += 1
