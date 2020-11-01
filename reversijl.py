@@ -16,7 +16,7 @@ from random import *
 from copy import deepcopy
 from collections import Counter
 import operator
-import Julia
+import julia
 
 j = julia.Julia()
 chooseMovejl = j.include("chooseMovejl.jl")

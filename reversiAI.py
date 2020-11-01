@@ -78,7 +78,7 @@ if args.model2 == "PMC":
 elif args.model2 == "MC":
   P1d = 4
 elif args.model2 == "AB":
-  P0d = 6
+  P1d = 6
 else:
   print("this is not a correct model, please enter one of the following:\n"
   "\"PMC\" : pure monte carlo tree search\n"
@@ -370,7 +370,7 @@ class Board:
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
-      elif (P0d == 1 and P1d == 6) and (P0d == 6 and P1d == 1):
+      elif (P0d == 1 and P1d == 6) or (P0d == 6 and P1d == 1):
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         abtimesavg = mean(abtimes)
@@ -414,7 +414,7 @@ class Board:
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
-      elif (P0d == 4 and P1d == 6) and (P0d == 6 and P1d == 4):
+      elif (P0d == 4 and P1d == 6) or (P0d == 6 and P1d == 4):
         mctactimesavg = mean(mctactimes)
         mctacscaledtimesavg = mean(mctacscaledtimes)
         abtimesavg = mean(abtimes)
@@ -458,6 +458,8 @@ class Board:
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
+      exit()
+      #root.destroy()
 
     if not self.won:
       root.after(0, self.update)
