@@ -15,12 +15,14 @@ from time import *
 from random import *
 from copy import deepcopy
 from collections import Counter
+from statistics import mean
 import operator
+import argparse
+import pandas as pd
 
 #Variable setup
 nodes = 0
 depth = 4
-difficulty = 0
 moves = 0
 playouts = 1
 pmctimes = []
@@ -28,7 +30,6 @@ abtimes = []
 mctactimes = []
 pmcscaledtimes = []
 mctacscaledtimes = []
-plays = 0
 
 #Tkinter setup
 root = Tk()
@@ -40,6 +41,43 @@ screen = Canvas(
   highlightthickness=0
 )
 screen.pack()
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+  "model1",
+  help="the AI model to use for player1: PMC, MC, AB"
+)
+parser.add_argument(
+  "model2",
+  help="the AI model to use for player2: PMC, MC, AB"
+)
+args = parser.parse_args()
+
+if args.model1 == "PMC":
+  P0d = 1
+elif args.model1 == "MC":
+  P0d = 4
+elif args.model1 == "AB":
+  P0d = 6
+else:
+  print("this is not a correct model, please enter one of the following:\n"
+  "\"PMC\" : pure monte carlo tree search\n"
+  "\"MC\" : monte carlo tree search with heuristics\n"
+  "\"AB\" : alpha beta\n")
+
+difficulty = P0d
+
+if args.model2 == "PMC":
+  P1d = 1
+elif args.model2 == "MC":
+  P1d = 4
+elif args.model2 == "AB":
+  P0d = 6
+else:
+  print("this is not a correct model, please enter one of the following:\n"
+  "\"PMC\" : pure monte carlo tree search\n"
+  "\"MC\" : monte carlo tree search with heuristics\n"
+  "\"AB\" : alpha beta\n")
 
 class Board:
   def __init__(self):
@@ -64,7 +102,6 @@ class Board:
   #Updating the board to the screen
   def update(self):
     global playouts
-    global plays
     screen.delete("highlight")
     screen.delete("tile")
     for x in range(8):
@@ -1082,7 +1119,7 @@ runGame()
 
 #Binding, setting
 # screen.bind("<Button-1>", clickHandle)
-difficulty = 4
+
 playGame()
 screen.bind("<Key>",keyHandle)
 screen.focus_set()

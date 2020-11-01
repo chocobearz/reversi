@@ -22,8 +22,7 @@ nodes = 0
 depth = 4
 difficulty = 0
 moves = 0
-playouts = 1
-plays = 0
+playouts = 40
 
 #Tkinter setup
 root = Tk()
@@ -204,7 +203,7 @@ class Board:
         #smartest AI with alpha beta min max pruneing and knowledge of tactics
         else:
           alphaBetaResult = self.alphaBeta(
-            self.array,playouts,
+            self.array,
             depth,
             -float("inf"),
             float("inf"),
@@ -234,7 +233,6 @@ class Board:
   #Moves to position
   def boardMove(self,x,y):
     global nodes
-    global plays
     #Move and update screen
     self.oldarray = self.array
     self.oldarray[x][y]="w"
@@ -247,7 +245,6 @@ class Board:
     #Check if ai must pass
     self.passTest()
     self.update()
-    plays+=1
 
   #METHOD: Draws scoreboard to screen
   def drawScoreBoard(self):

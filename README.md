@@ -24,6 +24,26 @@ The code was built using Python 3.8.5 and Julia 1.5.0
 Be sure you are running both 64 bit versions as Python tends to install 32 bit
 by default and this will cause errors.
 
+Set up venv:
+
+`$python -m venv venv`
+
+In Windows:
+
+`$ venv\Scripts\activate.bat`
+
+In Linux/MacOs:
+
+`$ source venv/bin/activate`
+
+Run:
+
+``` 
+$ pip install -r requirements.txt
+$ juliaSetup.py
+```
+
+
 <!-- CHOSEN PROJECT -->
 ## Chosen Project
 
