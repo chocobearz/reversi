@@ -661,9 +661,10 @@ class Board:
           white = tile_counts['w']
         else:
           white = 0
+
         #increment the relevant stat
         #allowe AI to play against eachother
-        if self.player == 1:
+        if current_player == 1:
           if black > white:
             wins += 1
           elif black == white:
