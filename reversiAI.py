@@ -344,7 +344,8 @@ class Board:
           "MC vs PMC" : [winner],
           "PMC vs AB" : ["NA"],
           "MC vs AB" : ["NA"],
-          "Playouts" : [playouts]
+          "Playouts" : [playouts],
+          "Language" : ["Python"]
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
@@ -360,7 +361,8 @@ class Board:
           "MC vs PMC" : ["NA"],
           "PMC vs AB" : ["NA"],
           "MC vs AB" : ["NA"],
-          "Playouts" : [playouts]
+          "Playouts" : [playouts],
+          "Language" : ["Python"]
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
@@ -388,7 +390,8 @@ class Board:
           "MC vs PMC" : ["NA"],
           "PMC vs AB" : [winner],
           "MC vs AB" : ["NA"],
-          "Playouts" : [playouts]
+          "Playouts" : [playouts],
+          "Language" : ["Python"]
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
@@ -404,7 +407,8 @@ class Board:
           "MC vs PMC" : ["NA"],
           "PMC vs AB" : ["NA"],
           "MC vs AB" : ["NA"],
-          "Playouts" : [playouts]
+          "Playouts" : [playouts],
+          "Language" : ["Python"]
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
@@ -432,7 +436,8 @@ class Board:
           "MC vs PMC" : ["NA"],
           "PMC vs AB" : ["NA"],
           "MC vs AB" : [winner],
-          "Playouts" : [playouts]
+          "Playouts" : [playouts],
+          "Language" : ["Python"]
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
@@ -448,7 +453,8 @@ class Board:
           "MC vs PMC" : ["NA"],
           "PMC vs AB" : ["NA"],
           "MC vs AB" : ["NA"],
-          "Playouts" : [playouts]
+          "Playouts" : [playouts],
+          "Language" : ["Python"]
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
@@ -562,15 +568,15 @@ class Board:
     possible_boards = play_choices[1]
     if len(empty) == 0:
       self.passed = True
-      return [self.array, 0]
+      return [self.array]
     elif len(empty) == 1:
-      return(possible_boards[0], empty[0], 0)
+      return(possible_boards[0], empty[0])
 
     #set up dict for the locations and their win statistics
     for location in range(0, len(empty)):
       result_tracker.setdefault(location, None)
 
-    for i, empty_location in enumerate(result_tracker):
+    for empty_location in result_tracker:
       wins = 0
       losses = 0
       draws = 0
@@ -692,6 +698,8 @@ class Board:
       playtime
     ]
 
+####### END OF MY CODE #######################
+
   #alphaBeta pruning on the minimax tree
   def alphaBeta(self,node,depth,alpha,beta,maximizing):
     """Choose Move determines what the next optimal move should be, based alpha
@@ -707,7 +715,7 @@ class Board:
 
     Returns:
 
-    list : list with the new chosen board, the chosen tile to play and time
+    list : list with the new chosen board and the chosen tile to play
     """
     global nodes
     nodes += 1
@@ -752,8 +760,6 @@ class Board:
         if beta<=alpha:
           break
       return([v,bestBoard,bestChoice])
-
-####### END OF MY CODE #######################
 
 #FUNCTION: Returns a board after making a move according to rules
 #Assumes the move is valid
@@ -1246,7 +1252,6 @@ runGame()
 
 #Binding, setting
 # screen.bind("<Button-1>", clickHandle)
-
 playGame()
 screen.bind("<Key>",keyHandle)
 screen.focus_set()

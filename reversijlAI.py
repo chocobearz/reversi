@@ -15,9 +15,11 @@ from time import *
 from random import *
 from copy import deepcopy
 from collections import Counter
-import operator
 from statistics import mean
-import Julia
+import operator
+import argparse
+import pandas as pd
+import julia
 
 j = julia.Julia()
 chooseMovejl = j.include("chooseMovejl.jl")
@@ -25,10 +27,8 @@ alphaBetajl = j.include("alphaBetajl.jl")
 
 #Variable setup
 nodes = 0
-difficulty = 0
 depth = 4
 moves = 0
-playouts = 10
 pmctimes = []
 abtimes = []
 mctactimes = []

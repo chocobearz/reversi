@@ -24,13 +24,10 @@ alphaBetajl = j.include("alphaBetajl.jl")
 
 #Variable setup
 nodes = 0
+depth = 1
 difficulty = 0
 moves = 0
-playouts = 1000
-depth = 7
-pmctimes = []
-abtimes = []
-mctactimes = []
+playouts = 1
 
 #Tkinter setup
 root = Tk()
@@ -196,9 +193,8 @@ class Board:
       screen.update()
       #If the computer is AI, make a move (Other AI is slightly better)
       if self.player==1:
-        startTime = time()
         self.oldarray = self.array
-        # one star : PMCTS, two stars : PMCTS with tactics
+        # one star : PMCTS, two stars : MCTS with tactics
         if difficulty == 1 or difficulty == 4:
           simpleMove = chooseMovejl(
             self.array,
@@ -211,8 +207,7 @@ class Board:
             self.getPlays,
             self.won
           )
-          end = time()
-          if len(simpleMove) == 3:
+          if len(simpleMove) == 4 or len(simpleMove) == 3:
             self.array = simpleMove[0]
             position = simpleMove[1]
             self.oldarray[position[0]][position[1]]="b"
@@ -244,11 +239,8 @@ class Board:
             self.oldarray[position[0]][position[1]]="b"
 
         self.player = 1-self.player
-        deltaTime = round((time()-startTime)*100)/100
-        if deltaTime<2:
-          sleep(2-deltaTime)
         nodes = 0
-        #Player must pass?
+        #Player must pass
         self.passTest()
     else:
       screen.create_text(
