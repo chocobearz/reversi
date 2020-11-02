@@ -215,11 +215,8 @@ class Board:
             self.oldarray[position[0]][position[1]]="b"
 
         self.player = 1-self.player
-        deltaTime = round((time()-startTime)*100)/100
-        if deltaTime<2:
-          sleep(2-deltaTime)
         nodes = 0
-        #Player must pass?
+        #Player must pass
         self.passTest()
     else:
       screen.create_text(
@@ -318,7 +315,7 @@ class Board:
 
 #################this code was written by me#################
   
-  #pure mote carlo tree search, level 1 and 2
+  #pure monte carlo tree search, level 1 and 2
   def chooseMove(self, difficulty):
     """Choose Move determines what the next optimal move should be, based on the
     maximizing the linear combination from the play statistics of random playouts
@@ -428,7 +425,7 @@ class Board:
 
         #increment the relevant stat
         #allowe AI to play against eachother
-        if self.player == 1:
+        if current_player == 1:
           if black > white:
             wins += 1
           elif black == white:
@@ -457,6 +454,8 @@ class Board:
     #print("move choice: {}".format(winning_move))
     # return location with max wins
     return [possible_boards[(winning_move)-1], empty[(winning_move)-1]]
+
+####### END OF MY CODE #######################
 
   #alphaBeta pruning on the minimax tree, level 3
   def alphaBeta(self,node,depth,alpha,beta,maximizing):
@@ -518,8 +517,6 @@ class Board:
         if beta<=alpha:
           break
       return([v,bestBoard,bestChoice])
-
-####### END OF MY CODE #######################
 
 #FUNCTION: Returns a board after making a move according to rules
 #Assumes the move is valid
