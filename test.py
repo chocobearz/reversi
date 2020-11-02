@@ -1,5 +1,5 @@
 import julia
-julia.install()
+#julia.install()
 from julia import api
 import time
 import numpy
