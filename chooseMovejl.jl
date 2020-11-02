@@ -1,10 +1,10 @@
 include("heuristics.jl")
 function chooseMove(
   array,
-  depth,
+  difficulty,
   playouts,
   valid,
-  passed,
+  passedin,
   player,
   moves,
   getPlays,
@@ -12,15 +12,17 @@ function chooseMove(
 )
   current_board = array
   current_player = player
+  loopTime = zeros(0)
+
   play_choices = getPlays(current_board)
   if isassigned(play_choices, 1) == false
-    passed = true
-    return (current_board, passed)
+    passedin = true
+    return (current_board, passedin)
   end
   empty = play_choices[1]
   possible_boards = play_choices[2]
   if size(empty)[1] == 1
-    return(possible_boards[1,:,:], empty[1,:], passed)
+    return(possible_boards[1,:,:], empty[1,:], passedin)
   end
 
   len = size(empty)[1]
@@ -37,7 +39,7 @@ function chooseMove(
       #incase the player gets changed in the playouts (eg. passing)
       player = current_player
       won = false
-      passed = passed
+      passed = passedin
       mustPass = true
       current_board = possible_boards[empty_location,:,:]
       player = 1-player
@@ -148,11 +150,17 @@ function chooseMove(
     result_tracker[empty_location] = score
   end
 
+  playtime = ((sum(loopTime)/length(loopTime)))
   # choose the maximum of the linear combination
   winning_move = findmax(result_tracker)[2]
   #print(winning_move)
   #print("run results are: {}".format(result_tracker))
   #print("move choice: {}".format(winning_move))
   # return location with max wins
-  return [possible_boards[winning_move,:,:], empty[winning_move,:], passed]
+  return [
+    possible_boards[winning_move,:,:],
+    empty[winning_move,:],
+    passedin,
+    playtime
+  ]
 end

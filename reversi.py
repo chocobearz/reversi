@@ -22,7 +22,7 @@ nodes = 0
 depth = 4
 difficulty = 0
 moves = 0
-playouts = 40
+playouts = 1
 
 #Tkinter setup
 root = Tk()
@@ -187,9 +187,8 @@ class Board:
       screen.update()
       #If the computer is AI, make a move (Other AI is slightly better)
       if self.player==1:
-        startTime = time()
         self.oldarray = self.array
-        #easy : pure MCTS
+        # one star : PMCTS, two stars : MCTS with tactics
         if difficulty == 1 or difficulty == 4:
           simpleMove = self.chooseMove(difficulty)
           if len(simpleMove) == 2:
@@ -209,7 +208,6 @@ class Board:
             float("inf"),
             1
           )
-          end = time()
           self.array = alphaBetaResult[1]
 
           if len(alphaBetaResult)==3:
