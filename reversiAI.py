@@ -227,15 +227,13 @@ class Board:
       #Draw the scoreboard and update the screen
       self.drawScoreBoard()
       screen.update()
-      startTime = time()
       self.oldarray = self.array
-      #easy : pure MCTS
       #print(difficulty)
       if difficulty == 1 or difficulty == 4:
         start = time()
         simpleMove = self.chooseMove(difficulty)
         end = time()
-        if len(simpleMove) == 3:
+        if len(simpleMove) == 3 or len(simpleMove) == 2 :
           self.array = simpleMove[0]
           position = simpleMove[1]
           if player == 1:
@@ -246,20 +244,15 @@ class Board:
             self.oldarray[position[0]][position[1]]="w"
             #reset player incase it got changed by the playouts
             self.player = 0
-          if difficulty == 1:
-            pmctimes.append(end - start)
-            pmcscaledtimes.append(simpleMove[2])
-          if difficulty == 4:
-            mctactimes.append(end - start)
-            mctacscaledtimes.append(simpleMove[2])
+          if len(simpleMove) == 3:
+            if difficulty == 1:
+              pmctimes.append(end - start)
+              pmcscaledtimes.append(simpleMove[2])
+            if difficulty == 4:
+              mctactimes.append(end - start)
+              mctacscaledtimes.append(simpleMove[2])
         else:
           self.array = simpleMove[0]
-          if difficulty == 1:
-            pmctimes.append(end - start)
-            pmcscaledtimes.append(simpleMove[1])
-          if difficulty == 4:
-            mctactimes.append(end - start)
-            mctacscaledtimes.append(simpleMove[1])
       #smartest AI with alpha beta min max pruneing and knowledge of tactics
       else:
         start = time()
@@ -287,8 +280,8 @@ class Board:
       else:
         self.player = 1
         difficulty = P1d
-
       nodes = 0
+      #Player must pass
       self.passTest()
     else:
       screen.create_text(
@@ -325,7 +318,8 @@ class Board:
       #      (mean(mctacscaledtimes))
       #    )
       #  )
-
+      print(pmctimes)
+      print(pmcscaledtimes)
       if (P0d == 1 and P1d == 4) or (P0d == 4 and P1d == 1):
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
