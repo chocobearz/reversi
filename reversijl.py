@@ -200,11 +200,9 @@ class Board:
             self.array,
             difficulty,
             playouts,
-            valid,
             self.passed,
             self.player,
             moves,
-            self.getPlays,
             self.won
           )
           if len(simpleMove) == 4 or len(simpleMove) == 3:
@@ -226,11 +224,9 @@ class Board:
             float("inf"),
             1,
             nodes,
-            valid,
             move,
             moves,
-            self.player,
-            self.getPlays
+            self.player
           )
           self.array = alphaBetaResult[1]
 
@@ -323,19 +319,6 @@ class Board:
       self.update()
     else:
       self.passed = False
-
-  #choose random play
-  def getPlays(self, board):
-    #Generates all possible moves
-    choices = []
-    boards = []
-    for x in range(8):
-      for y in range(8):
-        if valid(board,self.player,x,y):
-          test = move(board,x,y)
-          boards.append(test)
-          choices.append([x,y])
-    return[choices, boards]
 
 #FUNCTION: Returns a board after making a move according to rules
 #Assumes the move is valid

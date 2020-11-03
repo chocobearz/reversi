@@ -1,4 +1,5 @@
 include("heuristics.jl")
+include("utils.jl")
 function alphaBeta(
   node,
   depth,
@@ -6,11 +7,8 @@ function alphaBeta(
   beta,
   maximizing,
   nodes,
-  valid,
-  move,
   moves,
-  player,
-  getPlays
+  player
 )
   nodes += 1
   getPlaysResult = getPlays(node)
@@ -42,7 +40,6 @@ function alphaBeta(
         0,
         nodes,
         valid,
-        move,
         moves,
         player,
         getPlays
@@ -73,7 +70,6 @@ function alphaBeta(
         0,
         nodes,
         valid,
-        move,
         moves,
         player,
         getPlays

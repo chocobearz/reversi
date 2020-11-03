@@ -1,13 +1,12 @@
 include("heuristics.jl")
+include("utils.jl")
 function chooseMove(
   array,
   difficulty,
   playouts,
-  valid,
   passedin,
   player,
   moves,
-  getPlays,
   won
 )
   current_board = array
@@ -45,7 +44,7 @@ function chooseMove(
       player = 1-player
       for x in 1:8
         for y in 1:8
-          if valid(current_board,player,x-1,y-1)
+          if valid(current_board,player,x,y)
             mustPass=false
           end
         end
