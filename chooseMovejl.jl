@@ -42,8 +42,8 @@ function chooseMove(
       mustPass = true
       current_board = possible_boards[empty_location,:,:]
       player = 1-player
-      for x in 1:8
-        for y in 1:8
+      for y in 1:8
+        for x in 1:8
           if valid(current_board,player,x,y)
             mustPass=false
           end
@@ -93,8 +93,8 @@ function chooseMove(
         current_board = temp_possible_boards[chosen,:,:]
         player = 1-player
         mustPass = true
-        for x in 1:8
-          for y in 1:8
+        for y in 1:8
+          for x in 1:8
             if valid(current_board,player,x-1,y-1)
               mustPass=false
             end
