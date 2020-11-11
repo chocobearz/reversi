@@ -12,7 +12,7 @@ function valid(
   else
     colour="b"
   end
-  
+
   #If there's already a piece there, it's an invalid move
   if array[x,y] != nothing
     return false

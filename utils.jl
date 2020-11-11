@@ -16,7 +16,6 @@ function valid(
   #If there's already a piece there, it's an invalid move
   if array[x,y] != nothing
     return false
-
   else
     #Generating the list of neighbours
     neighbour = false

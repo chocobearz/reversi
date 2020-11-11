@@ -40,7 +40,7 @@ function move(
 
     #Which tiles to convert
     convert = Any[]
-  
+
     #For all the generated neighbours, determine if they form a line
     #If a line is formed, we will add it to the convert array
     for neighbour in neighbours
@@ -56,7 +56,7 @@ function move(
   
         tempX = neighX
         tempY = neighY
-  
+
         #While we are in the bounds of the board
         while 1<=tempX<=8 && 1<=tempY<=8
           push!(path,[tempX,tempY])
