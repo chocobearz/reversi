@@ -13,7 +13,7 @@ function chooseMove(
   current_player = player
   loopTime = zeros(0)
 
-  play_choices = getPlays(current_board)
+  play_choices = getPlays(current_board, player)
   if isassigned(play_choices, 1) == false
     passedin = true
     return (current_board, passedin)
@@ -65,7 +65,7 @@ function chooseMove(
       time = @timed while won != true
         play_choices = []
         # choose randomly from empty locations
-        play_choices = getPlays(current_board)
+        play_choices = getPlays(current_board, player)
         if isassigned(play_choices, 1) == false
           if passed
             won = true

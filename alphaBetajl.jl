@@ -11,7 +11,7 @@ function alphaBeta(
   player
 )
   nodes += 1
-  getPlaysResult = getPlays(node)
+  getPlaysResult = getPlays(node, player)
 
   if depth==0 || isassigned(getPlaysResult, 1) == false
     return ([finalHeuristicjl(node,maximizing, moves, valid),node])
