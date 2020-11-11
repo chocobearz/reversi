@@ -1,4 +1,3 @@
-#file for testing the valid function
 #Checks if a move is valid for a given array.
 function valid(
   array,
@@ -70,7 +69,6 @@ function valid(
   end
 end
 
-#File for testing the move function
 #FUNCTION: Returns a board after making a move according to rules
 #Assumes the move is valid
 function move(
@@ -151,20 +149,20 @@ end
 
 #choose random play
 function getPlays(
-    board,
-    player
+  board,
+  player
 )
-  #Generates all possible moves
-  choices = zeros(0)
-  boards = zeros(0)
-  for y in 1:8
-    for x in 1:8
-      if valid(board,player,x,y):
-        test = move(board,x,y, player)
-        append!(boards, test)
-        append!(choices, [x,y])
-      end
+#Generates all possible moves
+choices = Any[]
+boards = Any[]
+for y in 1:8
+  for x in 1:8
+    if valid(board,player,x,y)
+      test = move(board,x,y, player)
+      push!(boards, test)
+      push!(choices, [x,y])
     end
   end
-  return[choices, boards]
+end
+return[choices, boards]
 end
