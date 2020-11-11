@@ -5,6 +5,7 @@ import julia
 j = julia.Julia()
 valid = j.include("valid.jl")
 move = j.include("move.jl")
+getPlays = j.include("getPlays.jl")
 
 array = [
   [None, None, None, None, None, None, None, None, None],
@@ -20,6 +21,8 @@ array = [
 x = 4
 y = 7
 
-print(valid(array,0, x, y))
+print(getPlays(array, 1))
 
-print(move(array, x, y, 0))
+print(valid(array,1, x, y))
+
+print(move(array, x, y, 1))
