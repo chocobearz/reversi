@@ -20,19 +20,9 @@ function move(
 
     #Determining the neighbours to the square
     neighbours = Any[]
-    for i in max(1,x-1):min(x+1,8)
-      for j in max(1,y-1):min(y+1,8)
+    for j in max(1,y-1):min(y+1,8)
+      for i in max(1,x-1):min(x+1,8)
         if array[i,j] != nothing
-          push!(neighbours,[i,j])
-        end
-      end
-    end
-    neighbour = false
-    neighbours = Any[]
-    for i in max(1,x-1):min(x+1,8)
-      for j in max(1,y-1):min(y+1,8)
-        if array[i,j]!=nothing
-          neighbour=true
           push!(neighbours,[i,j])
         end
       end

@@ -20,6 +20,6 @@ array = [
 x = 4
 y = 7
 
-print(valid(array,1, x, y))
+print(valid(array,0, x, y))
 
-print(move(array, x, y, 1))
+print(move(array, x, y, 0))

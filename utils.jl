@@ -20,8 +20,8 @@ function valid(
     #Generating the list of neighbours
     neighbour = false
     neighbours = Any[]
-    for i in max(1,x-1):min(x+1,8)
-      for j in max(1,y-1):min(y+1,8)
+    for  j in max(1,y-1):min(y+1,8)
+      for i in max(1,x-1):min(x+1,8)
         if array[i,j] != nothing
           neighbour=true
           push!(neighbours,[i,j])
@@ -39,7 +39,6 @@ function valid(
 
         neighX = neighbour[1]
         neighY = neighbour[2]
-        print(neighbour)
         #If the neighbour colour is equal to your colour, it doesn't form a line
         #Go onto the next neighbour
         if array[neighX,neighY]==colour
@@ -93,19 +92,9 @@ function move(
 
   #Determining the neighbours to the square
   neighbours = Any[]
-  for i in max(1,x-1):min(x+1,8)
-    for j in max(1,y-1):min(y+1,8)
+  for j in max(1,y-1):min(y+1,8)
+    for i in max(1,x-1):min(x+1,8)
       if array[i,j] != nothing
-        push!(neighbours,[i,j])
-      end
-    end
-  end
-  neighbour = false
-  neighbours = Any[]
-  for i in max(1,x-1):min(x+1,8)
-    for j in max(1,y-1):min(y+1,8)
-      if array[i,j]!=nothing
-        neighbour=true
         push!(neighbours,[i,j])
       end
     end
@@ -168,8 +157,8 @@ function getPlays(
   #Generates all possible moves
   choices = zeros(0)
   boards = zeros(0)
-  for x in 1:8:
-    for y in 1:8:
+  for y in 1:8
+    for x in 1:8
       if valid(board,player,x,y):
         test = move(board,x,y, player)
         append!(boards, test)
