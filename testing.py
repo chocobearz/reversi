@@ -8,21 +8,22 @@ move = j.include("move.jl")
 getPlays = j.include("getPlays.jl")
 
 array = [
-  [None, None, None, None, None, None, None, None, None],
-  [None, None, None, None, None, None, None, None, None],
-  [None, None, "b" , None, None, None, None, None, None],
-  [None, None, None, "b" , "w" , "w" , None, None, None],
-  [None, None, None, "b" , "b" ,  "b", None, None, None],
-  [None, None, "w" , "b" ,  "b", None, None, None, None],
-  [None, None, None, "w" , None, None, None, None, None],
-  [None, None, None, None, "w", None, None, None, None]
+  [None, None, None, None, None, None, None, None],
+  [None, None, None, None, None, None, None, None],
+  [None, None, "b" , None, None, None, None, None],
+  [None, None, None, "b" , "w" , "w" , None, None],
+  [None, None, None, "b" , "b" ,  "b", None, None],
+  [None, None, "w" , "b" ,  "b", None, None, None],
+  [None, None, None, "w" , None, None, None, None],
+  [None, None, None, None, "w", None, None, None]
 ]
 
 x = 4
 y = 7
 
-print(getPlays(array, 1))
+boards = getPlays(array, 1)[1]
+newboard = boards[1]
 
-print(valid(array,1, x, y))
+print(valid(newboard,1, x, y))
 
-print(move(array, x, y, 1))
+print(move(newboard, x, y, 1))

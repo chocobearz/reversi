@@ -13,7 +13,7 @@ function alphaBeta(
   nodes += 1
   getPlaysResult = getPlays(node, player)
 
-  if depth==0 || isassigned(getPlaysResult, 1) == false
+  if depth==0 || isempty(getPlaysResult[1]) == true
     return ([finalHeuristicjl(node,maximizing, moves, valid),node])
   end
 
@@ -31,7 +31,7 @@ function alphaBeta(
     bestBoard = []
     bestChoice = []
     for i in 1:boardsLength
-      board = boards[i, :, :]
+      board = boards[i]
       boardValue = alphaBeta(
         board,
         depth-1,
@@ -39,15 +39,13 @@ function alphaBeta(
         beta,
         0,
         nodes,
-        valid,
         moves,
         player,
-        getPlays
       )[1]
       if boardValue>v
         v = boardValue
         bestBoard = board
-        bestChoice = choices[i,:]
+        bestChoice = choices[i]
       end
       alpha = max(alpha,v)
       if beta <= alpha
@@ -61,7 +59,7 @@ function alphaBeta(
     bestBoard = []
     bestChoice = []
     for i in 1:boardsLength
-      board = boards[i, :, :]
+      board = boards[i]
       boardValue = alphaBeta(
         board,
         depth-1,
@@ -69,22 +67,24 @@ function alphaBeta(
         beta,
         0,
         nodes,
-        valid,
         moves,
         player,
-        getPlays
       )[1]
       if boardValue<v
         v = boardValue
         bestBoard = board
-        bestChoice = choices[i,:]
+        bestChoice = choices[i]
       end
       beta = min(beta,v)
       if beta<=alpha
         break
       end
     end
+    #fix for python index at 0
+    winningMoveX = bestChoice[1] - 1
+    winningMoveY = bestChoice[2] - 1
+    winningMove = [winningMoveX, winningMoveY]
     #println(bestBoard,bestChoice)
-    return([v,bestBoard,bestChoice])
+    return([v,bestBoard,winningMove])
   end
 end

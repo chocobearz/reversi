@@ -17,10 +17,15 @@ from copy import deepcopy
 from collections import Counter
 import operator
 import julia
-
-j = julia.Julia()
-chooseMovejl = j.include("chooseMovejl.jl")
-alphaBetajl = j.include("alphaBetajl.jl")
+from julia import Main
+Main.include('chooseMovejl.jl')
+Main.include('alphaBetajl.jl')
+#C:\Users\ptut0\Documents\reversi\venv\lib\site-packages\julia\core.py:687:
+#  FutureWarning: Accessing `Julia().<name>` to obtain Julia objects is
+# deprecated.  Use `from julia import Main; Main.<name>` or `jl = Julia();
+# jl.eval('<name>')`.
+chooseMovejl = Main.chooseMove
+alphaBetajl = Main.alphaBeta
 
 #Variable setup
 nodes = 0
@@ -224,10 +229,10 @@ class Board:
             float("inf"),
             1,
             nodes,
-            move,
             moves,
             self.player
           )
+
           self.array = alphaBetaResult[1]
 
           if len(alphaBetaResult)==3:

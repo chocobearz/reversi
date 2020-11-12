@@ -14,14 +14,14 @@ function chooseMove(
   loopTime = zeros(0)
 
   play_choices = getPlays(current_board, player)
-  if isassigned(play_choices, 1) == false
+  if isempty(play_choices[1]) == true
     passedin = true
     return (current_board, passedin)
   end
   empty = play_choices[1]
   possible_boards = play_choices[2]
   if size(empty)[1] == 1
-    return(possible_boards[1,:,:], empty[1,:], passedin)
+    return(possible_boards[1], empty[1], passedin)
   end
 
   len = size(empty)[1]
@@ -40,7 +40,7 @@ function chooseMove(
       won = false
       passed = passedin
       mustPass = true
-      current_board = possible_boards[empty_location,:,:]
+      current_board = possible_boards[empty_location]
       player = 1-player
       for y in 1:8
         for x in 1:8
@@ -66,7 +66,7 @@ function chooseMove(
         play_choices = []
         # choose randomly from empty locations
         play_choices = getPlays(current_board, player)
-        if isassigned(play_choices, 1) == false
+        if isempty(play_choices[1]) == true
           if passed
             won = true
           else
@@ -84,18 +84,18 @@ function chooseMove(
           bestScore = -Inf
           chosen = 0
           for i in 1:size(temp_possible_boards)[1]
-            score= finalHeuristicjl(temp_possible_boards[i,:,:],player,moves,valid)
+            score= finalHeuristicjl(temp_possible_boards[i],player,moves,valid)
             if score>bestScore
               chosen=i
             end
           end
         end
-        current_board = temp_possible_boards[chosen,:,:]
+        current_board = temp_possible_boards[chosen]
         player = 1-player
         mustPass = true
         for y in 1:8
           for x in 1:8
-            if valid(current_board,player,x-1,y-1)
+            if valid(current_board,player,x,y)
               mustPass=false
             end
           end
@@ -169,9 +169,15 @@ function chooseMove(
   #print("run results are: {}".format(result_tracker))
   #print("move choice: {}".format(winning_move))
   # return location with max wins
+
+  #fix for python index at 0
+  winningMoveX = empty[winning_move][1] - 1
+  winningMoveY = empty[winning_move][2] - 1
+  winningMove = [winningMoveX, winningMoveY]
+
   return [
-    possible_boards[winning_move,:,:],
-    empty[winning_move,:],
+    possible_boards[winning_move],
+    winningMove,
     passedin,
     playtime
   ]

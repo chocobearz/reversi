@@ -306,9 +306,9 @@ function finalHeuristicjl(array,player, moves, valid)
   #early game you want the power spots
   if moves<=4
     numMoves = 0
-    for x in 1:8
-      for y in 1:8
-        if valid(array,player,x-1,y-1)
+    for y in 1:8
+      for x in 1:8
+        if valid(array,player,x,y)
           numMoves += 1
         end
       end
@@ -317,9 +317,9 @@ function finalHeuristicjl(array,player, moves, valid)
   end
   if moves<=8
     numMoves = 0
-    for x in 1:8
-      for y in 1:8
-        if valid(array,player,x-1,y-1)
+    for y in 1:8
+      for x in 1:8
+        if valid(array,player,x,y)
           numMoves += 1
         end
       end
