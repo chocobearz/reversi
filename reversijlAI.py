@@ -476,7 +476,7 @@ class Board:
         }
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
-      #exit()
+      exit()
       #root.destroy()
 
     if not self.won:
