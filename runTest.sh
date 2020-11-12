@@ -11,10 +11,10 @@ for i in "${models[@]}"
 do
   for j in "${playouts[@]}"
   do
-    for run in {1..50}
+    for run in {1..3}
     do
-      venv/Scripts/python.exe reversiAI.py $i $j python
-      venv/Scripts/python.exe reversijlAI.py $i $j julia
+      venv/Scripts/python.exe reversiAI.py $i $j
+      venv/Scripts/python.exe reversijlAI.py $i $j
     done
   done
 done

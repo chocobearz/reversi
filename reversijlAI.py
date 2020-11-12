@@ -19,11 +19,12 @@ from statistics import mean
 import operator
 import argparse
 import pandas as pd
-import julia
+from julia import Main
+Main.include('chooseMovejl.jl')
+Main.include('alphaBetajl.jl')
 
-j = julia.Julia()
-chooseMovejl = j.include("chooseMovejl.jl")
-alphaBetajl = j.include("alphaBetajl.jl")
+chooseMovejl = Main.chooseMove
+alphaBetajl = Main.alphaBeta
 
 #Variable setup
 nodes = 0
@@ -337,8 +338,6 @@ class Board:
       #      (mean(mctacscaledtimes))
       #    )
       #  )
-      print(pmctimes)
-      print(pmcscaledtimes)
       if (P0d == 1 and P1d == 4) or (P0d == 4 and P1d == 1):
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)

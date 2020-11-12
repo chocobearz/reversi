@@ -318,8 +318,6 @@ class Board:
       #      (mean(mctacscaledtimes))
       #    )
       #  )
-      print(pmctimes)
-      print(pmcscaledtimes)
       if (P0d == 1 and P1d == 4) or (P0d == 4 and P1d == 1):
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)

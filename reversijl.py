@@ -20,10 +20,7 @@ import julia
 from julia import Main
 Main.include('chooseMovejl.jl')
 Main.include('alphaBetajl.jl')
-#C:\Users\ptut0\Documents\reversi\venv\lib\site-packages\julia\core.py:687:
-#  FutureWarning: Accessing `Julia().<name>` to obtain Julia objects is
-# deprecated.  Use `from julia import Main; Main.<name>` or `jl = Julia();
-# jl.eval('<name>')`.
+
 chooseMovejl = Main.chooseMove
 alphaBetajl = Main.alphaBeta
 
