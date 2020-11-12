@@ -59,6 +59,16 @@ args = parser.parse_args()
 playouts = int(args.playouts)
 depth = int(args.playouts)
 
+# depth is not the same as playouts and needs to be scaled down
+if depth == 5:
+  depth = 2
+elif depth == 10:
+  depth = 5
+elif depth == 50:
+  depth = 9
+elif depth == 100:
+  depth = 14
+
 if args.model1 == "PMC":
   P0d = 1
 elif args.model1 == "MC":

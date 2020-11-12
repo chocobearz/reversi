@@ -65,6 +65,22 @@ args = parser.parse_args()
 playouts = int(args.playouts)
 depth = int(args.playouts)
 
+# depth is not the same as playouts and needs to be scaled down
+if depth == 5:
+  depth = 2
+elif depth == 10:
+  depth = 5
+elif depth == 50:
+  depth = 9
+elif depth == 100:
+  depth = 14
+elif depth == 150:
+  depth = 20
+elif depth == 175:
+  depth = 27
+elif depth == 200:
+  depth = 35
+
 if args.model1 == "PMC":
   P0d = 1
 elif args.model1 == "MC":
@@ -114,6 +130,7 @@ class Board:
   #Updating the board to the screen
   def update(self):
     global playouts
+    global nodes
     screen.delete("highlight")
     screen.delete("tile")
     for x in range(8):
@@ -279,7 +296,6 @@ class Board:
           float("inf"),
           1,
           nodes,
-          move,
           moves,
           self.player
         )
@@ -339,6 +355,11 @@ class Board:
       #    )
       #  )
       if (P0d == 1 and P1d == 4) or (P0d == 4 and P1d == 1):
+        #the first run has to load julia and takes longer skewing the timing
+        #pmctimes = pmctimes.pop(0)
+        #pmcscaledtimes = pmcscaledtimes.pop(0)
+        #mctactimes = mctactimes.pop(0)
+        #mctacscaledtimes = mctacscaledtimes.pop(0)
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         mctactimesavg = mean(mctactimes)
@@ -368,6 +389,9 @@ class Board:
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif P0d == 1 and P1d == 1:
+        #the first run has to load julia and takes longer skewing the timing
+        #pmctimes = pmctimes.pop(0)
+        #pmcscaledtimes = pmcscaledtimes.pop(0)
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         results = {
@@ -385,6 +409,10 @@ class Board:
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif (P0d == 1 and P1d == 6) or (P0d == 6 and P1d == 1):
+        #the first run has to load julia and takes longer skewing the timing
+        #pmctimes = pmctimes.pop(0)
+        #pmcscaledtimes = pmcscaledtimes.pop(0)
+        #abtimes = abtimes.pop(0)
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         abtimesavg = mean(abtimes)
@@ -414,6 +442,9 @@ class Board:
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif P0d == 4 and P1d == 4:
+        #the first run has to load julia and takes longer skewing the timing
+        #mctacscaledtimes = mctacscaledtimes.pop(0)
+        #mctactimes = mctactimes.pop(0)
         mctactimesavg = mean(mctactimes)
         mctacscaledtimesavg = mean(mctacscaledtimes)
         results = {
@@ -431,6 +462,10 @@ class Board:
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif (P0d == 4 and P1d == 6) or (P0d == 6 and P1d == 4):
+        #the first run has to load julia and takes longer skewing the timing
+        #mctacscaledtimes = mctacscaledtimes.pop(0)
+        #mctactimes = mctactimes.pop(0)
+        #abtimes = abtimes.pop(0)
         mctactimesavg = mean(mctactimes)
         mctacscaledtimesavg = mean(mctacscaledtimes)
         abtimesavg = mean(abtimes)
@@ -460,6 +495,8 @@ class Board:
         resultsdf = pd.DataFrame(data=results)
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif (P0d == 6 and P1d == 6):
+        #the first run has to load julia and takes longer skewing the timing
+        #abtimes = abtimes.pop(0)
         abtimesavg = mean(abtimes)
         abscaledtimesavg = 0
         results = {

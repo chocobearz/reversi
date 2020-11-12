@@ -21,7 +21,10 @@ function chooseMove(
   empty = play_choices[1]
   possible_boards = play_choices[2]
   if size(empty)[1] == 1
-    return(possible_boards[1], empty[1], passedin)
+    winningMoveX = empty[1][1] - 1
+    winningMoveY = empty[1][2] - 1
+    winningMove = [winningMoveX, winningMoveY]
+    return(possible_boards[1], winningMove, passedin)
   end
 
   len = size(empty)[1]
@@ -174,7 +177,6 @@ function chooseMove(
   winningMoveX = empty[winning_move][1] - 1
   winningMoveY = empty[winning_move][2] - 1
   winningMove = [winningMoveX, winningMoveY]
-
   return [
     possible_boards[winning_move],
     winningMove,
