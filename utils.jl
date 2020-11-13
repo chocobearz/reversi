@@ -165,3 +165,8 @@ function getPlays(
   end
   return[choices, boards]
 end
+
+function randomTest()
+  theNumber = rand(1:10)
+  return theNumber
+end
