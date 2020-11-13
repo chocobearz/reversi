@@ -1,5 +1,7 @@
 include("heuristics.jl")
 include("utils.jl")
+using StatsBase
+
 function chooseMove(
   array,
   difficulty,
@@ -122,19 +124,11 @@ function chooseMove(
       #flat_board = Iterators.flatten(current_board)
       #println(flat_board)
       tiles = ['w','b']
-      tile_counts=Dict([(i,count(x->x==i,current_board)) for i in tiles])
+      tile_counts = countmap([c for c in current_board])
       #number of black tiles
-      if haskey(tile_counts, 'b')
-        black = tile_counts['b']
-      else
-        black = 0
-      end
+      black = get(tile_counts, "b", 0)
       #number of white tiles
-      if haskey(tile_counts, 'w')
-        white = tile_counts['w']
-      else
-        white = 0
-      end
+      white = get(tile_counts, "w", 0)
       #increment the relevant stat
       #allowe AI to play against eachother
       if current_player == 1

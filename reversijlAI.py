@@ -246,6 +246,11 @@ class Board:
 ######## MODIFIED BY ME ##############################
     if not self.won:
       global difficulty
+      global pmctimes
+      global pmcscaledtimes
+      global mctactimes
+      global mctacscaledtimes
+      global abtimes
       player = self.player
       #Draw the scoreboard and update the screen
       self.drawScoreBoard()
@@ -356,10 +361,10 @@ class Board:
       #  )
       if (P0d == 1 and P1d == 4) or (P0d == 4 and P1d == 1):
         #the first run has to load julia and takes longer skewing the timing
-        #pmctimes = pmctimes.pop(0)
-        #pmcscaledtimes = pmcscaledtimes.pop(0)
-        #mctactimes = mctactimes.pop(0)
-        #mctacscaledtimes = mctacscaledtimes.pop(0)
+        pmctimes.pop(0)
+        pmcscaledtimes.pop(0)
+        mctactimes.pop(0)
+        mctacscaledtimes.pop(0)
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         mctactimesavg = mean(mctactimes)
@@ -390,8 +395,8 @@ class Board:
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif P0d == 1 and P1d == 1:
         #the first run has to load julia and takes longer skewing the timing
-        #pmctimes = pmctimes.pop(0)
-        #pmcscaledtimes = pmcscaledtimes.pop(0)
+        pmctimes.pop(0)
+        pmcscaledtimes.pop(0)
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         results = {
@@ -410,9 +415,9 @@ class Board:
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif (P0d == 1 and P1d == 6) or (P0d == 6 and P1d == 1):
         #the first run has to load julia and takes longer skewing the timing
-        #pmctimes = pmctimes.pop(0)
-        #pmcscaledtimes = pmcscaledtimes.pop(0)
-        #abtimes = abtimes.pop(0)
+        pmctimes.pop(0)
+        pmcscaledtimes.pop(0)
+        abtimes.pop(0)
         pmctimesavg = mean(pmctimes)
         pmcscaledtimesavg = mean(pmcscaledtimes)
         abtimesavg = mean(abtimes)
@@ -443,8 +448,8 @@ class Board:
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif P0d == 4 and P1d == 4:
         #the first run has to load julia and takes longer skewing the timing
-        #mctacscaledtimes = mctacscaledtimes.pop(0)
-        #mctactimes = mctactimes.pop(0)
+        mctacscaledtimes.pop(0)
+        mctactimes.pop(0)
         mctactimesavg = mean(mctactimes)
         mctacscaledtimesavg = mean(mctacscaledtimes)
         results = {
@@ -463,9 +468,9 @@ class Board:
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif (P0d == 4 and P1d == 6) or (P0d == 6 and P1d == 4):
         #the first run has to load julia and takes longer skewing the timing
-        #mctacscaledtimes = mctacscaledtimes.pop(0)
-        #mctactimes = mctactimes.pop(0)
-        #abtimes = abtimes.pop(0)
+        mctacscaledtimes.pop(0)
+        mctactimes.pop(0)
+        abtimes.pop(0)
         mctactimesavg = mean(mctactimes)
         mctacscaledtimesavg = mean(mctacscaledtimes)
         abtimesavg = mean(abtimes)
@@ -496,7 +501,7 @@ class Board:
         resultsdf.to_csv('results.csv', mode='a', header=False)
       elif (P0d == 6 and P1d == 6):
         #the first run has to load julia and takes longer skewing the timing
-        #abtimes = abtimes.pop(0)
+        abtimes.pop(0)
         abtimesavg = mean(abtimes)
         abscaledtimesavg = 0
         results = {
