@@ -42,7 +42,14 @@ Run:
 $ pip install -r requirements.txt
 $ juliaSetup.py
 ```
+Set up Julia libraries:
 
+Run:
+
+```
+$ Julia
+$ include("setup.jl")
+```
 
 <!-- CHOSEN PROJECT -->
 ## Chosen Project
