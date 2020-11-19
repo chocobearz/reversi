@@ -65,9 +65,15 @@ if depth == 5:
 elif depth == 10:
   depth = 5
 elif depth == 50:
-  depth = 9
+  depth = 6
 elif depth == 100:
-  depth = 14
+  depth = 7
+elif depth == 150:
+  depth = 7
+elif depth == 175:
+  depth = 7
+elif depth == 200:
+  depth = 7
 
 if args.model1 == "PMC":
   P0d = 1
