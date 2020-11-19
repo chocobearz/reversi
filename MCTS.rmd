@@ -6,26 +6,62 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-data <- read.csv("C:/Users/Correy/Desktop/cmpt310/cmpt-310/final_project/winTracker.csv", sep = ",", header = TRUE)
+data <- read.csv("forR.csv", sep = ",", header = TRUE)
 ```
 
 
 ```{r}
-newdata1 <- subset(data, select = c(MCTS, Playouts, Language))
-newdata2 <- subset(data, select = c(PMCTS, Playouts, Language))
-newdata3 <- subset(data, select = c(Alpha.Beta, Playouts, Language))
+newdata1 <- subset(data, select = c(avg_speed_play_PMC, Playouts, Language))
+newdata2 <- subset(data, select = c(avg_speed_playout_PMC, Playouts, Language))
+newdata3 <- subset(data, select = c(avg_speed_play_MC, Playouts, Language))
+newdata4 <- subset(data, select = c(avg_speed_playout_MC, Playouts, Language))
+newdata5 <- subset(data, select = c(avg_speed_play_AB, Depth, Language))
 ```
 
 
 ```{r}
 library(ggplot2)
-ggplot(newdata1, aes(x=log(Playouts), y=MCTS, group=Language)) +
+ggplot(newdata1, aes(x=log(Playouts), y=avg_speed_play_PMC, group=Language)) +
   geom_line(aes(color=Language))+
   geom_point(aes(color=Language))
-ggplot(newdata2, aes(x=log(Playouts), y=PMCTS, group=Language)) +
+ggplot(newdata2, aes(x=log(Playouts), y=avg_speed_playout_PMC, group=Language)) +
   geom_line(aes(color=Language))+
   geom_point(aes(color=Language))
-ggplot(newdata3, aes(x=log(Playouts), y=Alpha.Beta, group=Language)) +
+ggplot(newdata3, aes(x=log(Playouts), y=avg_speed_play_MC, group=Language)) +
+  geom_line(aes(color=Language))+
+  geom_point(aes(color=Language))
+ggplot(newdata4, aes(x=log(Playouts), y=avg_speed_playout_MC, group=Language)) +
+  geom_line(aes(color=Language))+
+  geom_point(aes(color=Language))
+ggplot(newdata5, aes(x=Depth, y=avg_speed_play_AB, group=Language)) +
   geom_line(aes(color=Language))+
   geom_point(aes(color=Language))
 ```
+
+#T test on difference of means bettween MCTS and PMCTS in Julia and Python
+
+```{r}
+data2 <- read.csv("results.csv", sep = ",", header = TRUE)
+```
+
+```{r}
+playouts <- subset(data2, select = c(PMCTS.Playout, MCTS.Playout, Language))
+julia <- playouts[playouts$Language == "Julia",]
+python <- playouts[playouts$Language == "Python",]
+julia <- na.omit(julia)
+python <- na.omit(python)
+
+#check vairance assumption
+sd(julia$PMCTS.Playout)
+sd(julia$MCTS.Playout)
+sd(python$PMCTS.Playout)
+sd(python$MCTS.Playout)
+
+#pretty close... continue
+
+res <- t.test(julia$PMCTS.Playout, julia$MCTS.Playout)
+res
+res <- t.test(python$PMCTS.Playout, python$MCTS.Playout)
+res
+```
+
