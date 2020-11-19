@@ -19,10 +19,10 @@ import operator
 
 #Variable setup
 nodes = 0
-depth = 4
+depth = 5
 difficulty = 0
 moves = 0
-playouts = 1
+playouts = 50
 
 #Tkinter setup
 root = Tk()

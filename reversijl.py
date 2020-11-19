@@ -26,10 +26,10 @@ alphaBetajl = Main.alphaBeta
 
 #Variable setup
 nodes = 0
-depth = 1
+depth = 5
 difficulty = 0
 moves = 0
-playouts = 1
+playouts = 200
 
 #Tkinter setup
 root = Tk()
