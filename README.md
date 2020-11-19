@@ -63,22 +63,27 @@ allow the player to play at different difficulty levels.
 <!-- PROJECT FILES -->
 ## Project Files
 
-* `reversi.py` : the Python Code to run the reversi game
-* `juliaHelpers.jl` : julia AI functions called within the Pyhton script
-* `environmentTest.py` : test script to be sure Julia environment is being
-correctly called from python (see [My Python Code](#my-python) for more info)
-* `test.py`
 * `alphaBetajl.jl` : Julia alpha beta implementation
 * `chooseMovejl.jl` : MCTS Julia implementation
 * `dot.jl` : test code for Julia dot product
+* `getplays.jl` : test code for get plays written in Julia
 * `heuristics.jl` : heuristics implemented in Julia
-* `requirements.txt` : code requirements
+* `juliaSetup.jl` : script to set up PyJulia requirements
+* `MCTS.rmd` : R code for plotting
+* `move.jl` : test code for move written in Julia
+* `requirements.txt` : Pyhton requirements
+* `results.*` : The raw data for the timing runs
+* `reversi.py` : the Python Code to run the reversi game
 * `reversiAI.py` : AI vs AI in python
 * `reversijl.py` : implementation in Julia
 * `reversijlAI.py` : Julia implemented AI vs AI
+* `runTest.sh` : Shell script to iterate over all number of playouts/depts and 
+all combinations of models
+* `setup.jl` :Julia requirements
 * `test.py` : testing the dot products in python and Julia
-* `MCTS.rmd` : R code for plotting
-* `winTracker.*` : The raw data for the timing runs
+* `testing.py` : test all of the Julia functions
+* `utils.jl` : helper functions for AI models
+* `valid.jl` : test code for valid written in Julia
 
 <!-- USER INTERFACE -->
 ## User Interface
@@ -171,54 +176,159 @@ https://www.geeksforgeeks.org/will-julia-become-the-empress-of-the-artificial-in
 
 ### Speed Comparison
 
-To validate the claims that Julia is, in fact, faster than Python, the program
-was run in both languages and the average run times of each of the models was
-recorded (for more on which models were tested see [Models](#models)).
+In order to validate the claims that Julia is, in fact, faster than Python, the program
+was run in AI vs AI playouts in both languages and the average run times of each of the models was recorded (for more on which models were tested see section 4. Models).
 
-This was done for 1, 10, 100, and 1000 playouts(or depth in the case of Alpha
-Beta) and for each of the Models.
-The comparison can be seen in the plots below. The average of 50 games was taken.
+This was done for 1, 5, 10, 100, 150, 175 and 200 playouts, and a depth of 2, 5, 6 and 7 for Alpha Beta. Except in cases where the testing was cut off early when the games were clearly
+taking longer than was feasible for normal game play at the given depth or number of playouts.
+
+The comparison can be seen in figures 3-7 and the average of 50 games was taken.
 
 <p align="center">
-<img src="PMCTSPlot.jpg" alt="PMCTSPlot">
+<img src="pmc_play_plot.JPG" alt="PMCTSPlot">
 </p>
+
 <p align="center">
-<img src="MCTSPlot.jpg" alt="MCTSPlot">
+<img src="mc_play_plot.JPG" alt="ABPlot">
 </p>
+
+#### Playout timing results
+
+The "plays" plots above use a log time scale and are the total 
+time it takes for the AI to choose a move and update the board, we want to keep 
+this under 5 seconds for smooth game play. 
+
 <p align="center">
-<img src="ABPlot.jpg" alt="ABPlot">
+<img src="pmc_playout_plot.JPG" alt="MCTSPlot">
 </p>
 
-These plots use a log time scale, but we can see that not only is Julia faster
-than Python, but the speed decreases at a slower rate as the playouts increase.
+<p align="center">
+<img src="mc_playout_plot.JPG" alt="ABPlot">
+</p>
 
-We can see that for Pure Monte-Carlo Tree Search(PMCTS) Julia is able to make
-approximately 170 playouts per second. Python on the other hand completes only
-about 6. We see similar results for the other heuristics with Julia completing
-about 165 playouts per second and Python completing close to 7 using MCTS with
-tactics.
+From these plots we can see that not only is Julia faster
+than Python, but the speed decreases at a slower rate as the playouts increase. 
+The "playouts" plots above show the time it takes to make a single 
+playout, this helps us get the number of playouts per second for each language.
+ We can see, as is expected, that the time to make a playout is relatively 
+ stable independent of the number of playouts. This measure is also independent 
+ of the number of empty valid place spaces unlike the timing for the full play. 
 
-We could not even feasibly run more than 100 playouts for the MCTS variants in
-Python. In Julia we could run 1000 in a reasonable time (about 5 seconds) and
-we choose this time for the main program.
+We can see that a single Pure Monte-Carlo Tree Search(PMCTS) playout in Julia
+takes approximately 7.46e-5 seconds, or it can make 13404 playouts per
+second. Python on the other hand takes 4.56e-4 seconds to complete a
+playout, or 2188 playouts per second. We see similar results for MCTS with
+tactics with Julia taking 7.27e-5 seconds to complete a playout
+(13755 playouts per second) and Python requiring 6.44e-4 seconds
+(1552 playouts per second). There appears to be a drop in time per playout for 
+MCTS using tactics in Julia, which is surprising as several heuristics need to 
+be run (see section 5. Heuristics) and may speak to the speed of the built in 
+function to choose a random integer compared to hand written heuristics. 
+However, after completing a two sample T-test on the difference in means it was 
+found that the means were not significantly different at a level of alpha = 
+0.05.
 
-Alpha beta search is a bit of a different case. In python we could only run a
-depth of 1, the jump to 10 made the run time much too long. In Julia we see that
-We have a slightly faster play time at 1, but we are able to make up to 1000
-plays with relative ease, although with much higher times than for MCTS. Our
-curve, however, is a much different shape. We can see it very steeply increases
-at 10 then flattens out. This is due to the nature of the algorithm being a tree
-search using depth rather than playouts. The depth of the Tree is somewhere
-close to 10, so increasing the depth past this point adds no new time as there is
-no new area to search. We see such a steep increase with increased depth because
-of the exponential nature of tree depth. We found that 5 depth took on average 
-0.77 second per play, 7 depth took 3.18 and 8 depth took 18.54. In order to meet
-our reasonable cut off of 5 seconds a depth of 7 was chosen for the main game.
+<p align="center">
+<img src="julia_ttest.JPG" alt="ABPlot">
+</p>
+
+Whereas when completing a two sample T-Test on the different 
+of means between MCTS with tactics and PMCTS in Python we see that there is a 
+significant difference in means at a level of $\alpha = 0.05$ with p = 
+2.2e-16, similarly the confidence interval does not include 0. 
+
+<p align="center">
+<img src="python_ttest.JPG" alt="ABPlot">
+</p>
+
+This suggests that the calculation of the heuristics in Julia takes a near 
+negligible amount of additional time compared to a random choice, the increase 
+in playouts per second is likely to do with differences in the number of empty 
+variables to check during each playout, as well as general background processes 
+that make slight variations in timing every run. Whereas this is not the case in
+ Python where we see a significant decrease in playouts per second when adding 
+tactics. 
+
+From figure 5. we see that Julia can run 200 playouts in under our allotted 5 
+second play time, whereas Python can only run about 45 playouts in 5 seconds 
+using both MCTS with tactics PMCTS. These numbers of playouts have been chosen 
+for the main program implementation.
+
+<p align="center">
+<img src="ab_play_plot.JPG" alt="ABPlot">
+</p>
+
+Alpha beta search is a slightly of a different case. Alpha Beta search does not 
+rely on playouts, instead it is a recursive tree search and relies on the 
+search depth [Alpha Beta](#alpha-beta). This is why in figure 7 we plot 
+playtime in seconds against depth rather than the log of playouts. Because of 
+Alpha Beta's recursive nature timing was only done for the entire time it takes
+ to choose the next move, rather than one single search, or the search of one 
+ node in the tree. This lead to a large range of play choice times at larger 
+ depths. When there are few valid play spaces the search is much quicker than 
+ if there are several as it needs to complete the full tree search at the given
+depth belonging to every one of the nodes. This is why we see what appears to
+ be a linear increase in figure 7. rather than exponential as we would expect
+ over an increased number of experiments. Once we reach 50 playouts we can 
+see a range in the time to make a play choice anywhere from 0.09 seconds per
+ play to over 100 seconds per play in Julia and similar ranges in python, 
+although the fastest in Python in over 1 second.
+
+As a future improvement to the reversi AI it could be beneficial to create a cut
+ off time, or conditional where if the number of valid play spaces is large, the
+ depth is reduced. As such we would be able to increase the base depth in Julia
+beyond 7. Running tests at a consistent depth of 9 some games were played 
+quickly with playtime's of close to one second, however, it was easy for the 
+game to be caught up in a large search tree and take over 500 seconds for or 
+more, which is unfeasible for our game. A depth of 5 was chosen for our main 
+implementation, at this depth plays remain consistently under the 5 second 
+limit.
 
 In order to make efficient use of time these tests were done by running the AI
 against itself. The outcomes of these games were used to monitor that the
 "smarter AI" were, in fact, winning more games. For more on this see 
-[AI vs. AI Comparison](#ai-vs-ai). 
+[AI vs. AI Comparison](#ai-vs-ai).  
+
+#### Note on Julia optimization}
+In general programmers tend are to be most comfortable with programming in row 
+major fashion as they begin learning in languages such as C and C++, Python and
+ Java. Python, however, is a special case where `numpy` can handle can adjust 
+ storage to both row and column major variants, but is most often coded for row
+ major efficiency.
+
+An example of row major iteration:
+
+```
+import numpy as np
+my_array = np.array([[1,2,3],[4,5,6],[7,8,9]])
+rows,cols = my_array.shape
+
+for i in range(rows):
+  for j in range(cols):
+    print(my_array[i,j])
+```
+
+Julia, however, is a column major language. This means that consecutive elements
+ of a column are positioned next to each other in memory and are sequentially 
+stored in memory across the columns. Therefore by programming array access as 
+follows, you can see a significant boost in processing speed by sequentially 
+accessing the memory locations.
+
+```
+my_array = [1 2 3
+            4 5 6 
+            7 8 9]
+rows, cols = size(my_array)
+
+for j in 1:cols
+  for i in 1:rows
+    print(my_array[i,j])
+  end
+end
+```
+
+Column major programming was used in Julia to increase the speed for this
+ project.
 
 <!-- MODELS -->
 ## Models
@@ -288,7 +398,6 @@ https://www.youtube.com/watch?v=l-hh51ncgDI
 
 https://en.wikipedia.org/wiki/Minimax
 
-Lecture Notes
 
 Alpha Beta pruning helps the MiniMax algorithm be more efficient. The MiniMax
 algorithm will tend to explore parts of the tree that it does not need to be
@@ -309,7 +418,6 @@ https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-
 
 https://www.cs.cornell.edu/courses/cs312/2002sp/lectures/rec21.html
 
-Lecture Notes
 
 We start assuming the worst case for the maximizer (root) at -infinity for Alpha
 and infinity for Beta.
@@ -360,20 +468,47 @@ https://guides.net4tv.com/games/how-win-reversi#:~:text=The%20basic%20moves%20of
 
 ### AI vs AI
 
-When completing the speed tests(see [Speed Comparison](#speed-comparison)) the
-games were being played AI vs AI. We not only want to know comparisons of speed
-between the methods, we also would like to see an improved performance as new
-heuristics are added.
+When completing the speed tests [Speed Comparison](#speed-comparison) the
+games were being played AI vs AI. We not only want to know comparisons of speed 
+between the methods, we also would like to see an improved performance as new 
+heuristics are added. This is, however, not always the case, as the 
+relationships between the algorithms are complex. However both Python and 
+Julia show a very similar pattern of winning models, suggesting that the winning
+ model is independent of the language.
 
-When playing the PMCTS against MCTS with tactics, the tactics won every time, no
-matter the depth. When playing Alpha Beta against the PMCTS the PMCTS won most
-often when the depth at 1. This makes sense as we will not be
-searching very deep into the tree yet the random playouts will still play out an
-entire game. Similarly when playing MCTS with Tactics with the Alpha Beta we
-needed to have more than a depth of 10 to see the Alpha Beta winning more often.
+In order to run these tests you can run the: `runTest.sh` code.
 
-As soon as we increase the depth at all we see Alpha Beta dominating the play.
+<p align="center">
+<img src="winners.JPG" alt="ABPlot">
+</p>
 
-In order to run these tests you much change : `playouts` to the number of
-playouts to run and change `depth` to be 4 for MCTS, 1 for PMCTS and 6 for Alpha
-Beta
+#### PMCTS vs MCTS with tactics
+For low numbers of playouts, ie. under 50, MCTS with tactics has a clear
+ advantage over PMCTS. This is as expected, with few random playouts we cannot
+ expect a purely random model to perform well, however, by adding prior 
+knowledge of game play we should expect to see a smarter AI even with lower 
+playouts.
+
+Once we reach 50 playouts we see MCTS with tactics beginning to lose its edge 
+over PMCTS. Once 150 playouts or more are reached the mdoels appear evenly 
+matched. This, again, is expected as we increase the number of playouts PMCTS 
+is expected to perform just as well, if not better than models written with 
+tactics, while taking less time to compute the optimal play (in the case of 
+Python).
+
+#### MCTS vs AB
+Both MCTS algorithms perform similarly against AB search, so they will be 
+discussed together here. 
+
+When the search depth is 1, only the first set of resulting playouts will be 
+search. This is not particularly informative so it is ot surprising it has 
+little advantage over both PMCTS ad MCTS with tactics resulting in close to a 
+50/50 win ratio. Once a depth of 5 is reached, however, a more robust search 
+is performed covering a multitude of possible play scenarios. This results in 
+AB winning the vast majority of games against both PMCTS and MCTS with tactics. 
+
+Once we reach a depth of 7, we are similarly reaching playouts at 100 and we 
+begin to see PMCTS performing well as we did with MCTS, we even have MCTS 
+coming as a close contender with AB at 100 playouts. Once again, this is 
+expected, we should see PMCTS becoming increasingly smarter as more playouts 
+are added.
