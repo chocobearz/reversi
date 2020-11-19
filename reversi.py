@@ -22,7 +22,7 @@ nodes = 0
 depth = 5
 difficulty = 0
 moves = 0
-playouts = 50
+playouts = 45
 
 #Tkinter setup
 root = Tk()
